@@ -5,7 +5,10 @@ program motiondetection;
 {$ENDIF}
 
 uses
-  Interfaces,Forms, frmmain;
+  {$IFDEF FPC}
+  Interfaces,
+  {$ENDIF}
+  Forms, frmmain;
 
 {$R *.res}
 

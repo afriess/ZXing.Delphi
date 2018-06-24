@@ -18,11 +18,12 @@ unit frmmain;
 interface
 
 uses
-{$IFDEF FPC}
+  {$ifdef FPC}
   LResources,
-{$ENDIF}
-  Windows, Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, ExtCtrls, Clipbrd, VFW, Buttons, Spin, fpimage;
+  {$endif}
+  {$ifdef MSWindows}Windows, VFW,{$endif}
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  StdCtrls, ExtCtrls, Clipbrd, Buttons, Spin, fpimage;
 
 type
 

@@ -124,8 +124,11 @@ __recovery/
 # FPC compiler-generated binaries (safe to delete)
 *.ppu
 *.lps
+*.or
 *.compiled
 backup/
+libscompiled/
+binscompiled/
 
 ### Visual Studio ###
 *.pdb
