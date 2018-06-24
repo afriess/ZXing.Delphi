@@ -17,9 +17,15 @@ unit ZXing.CharacterSetECI;
 
   * Implemented by E. Spelt for Delphi
 }
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
-uses SysUtils, Generics.Collections;
+uses
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections;
 
 type
 

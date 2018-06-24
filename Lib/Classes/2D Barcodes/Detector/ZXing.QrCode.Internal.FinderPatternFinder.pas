@@ -19,13 +19,17 @@
 
 unit ZXing.QrCode.Internal.FinderPatternFinder;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
-uses 
-  System.SysUtils,
-  System.Math,
-  System.Generics.Defaults,
-  System.Generics.Collections,
+uses
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
+  {$ifndef FPC}System.{$endif}Generics.Defaults,
+  Math,
   ZXing.Common.BitMatrix,
   ZXing.ResultPoint,
   ZXing.DecodeHinttype,
@@ -101,7 +105,7 @@ type
     average: Single;
   public
     constructor Create(f: Single);
-    function Compare(const Left, Right: IFinderPattern): Integer;
+    function Compare(constref Left, Right: IFinderPattern): Integer;
   end;
 
   TCenterComparator = class sealed(TInterfacedObject, IComparer<IFinderPattern>)
@@ -109,7 +113,7 @@ type
     average: Single;
   public
     constructor Create(f: Single);
-    function Compare(const Left, Right: IFinderPattern): Integer;
+    function Compare(constref Left, Right: IFinderPattern): Integer;
   end;
 
 implementation
@@ -865,7 +869,7 @@ begin
     // assignment)
     comparator :=  TFurthestFromAverageComparator.Create(average);
     FPossibleCenters.Sort(comparator);
-    limit := System.Math.Max((0.2 * average), stdDev);
+    limit := Math.Max((0.2 * average), stdDev);
     i := 0;
     while (((i < FPossibleCenters.Count) and
       (FPossibleCenters.Count > 3))) do
@@ -913,7 +917,7 @@ end;
 
 { TFurthestFromAverageComparator }
 
-function TFurthestFromAverageComparator.Compare(const Left,
+function TFurthestFromAverageComparator.Compare(constref Left,
   Right: IFinderPattern): Integer;
 var
   dA, dB: Single;
@@ -941,7 +945,7 @@ end;
 
 { TCenterComparator }
 
-function TCenterComparator.Compare(const Left, Right: IFinderPattern): Integer;
+function TCenterComparator.Compare(constref Left, Right: IFinderPattern): Integer;
 var
   dA, dB: Single;
 begin

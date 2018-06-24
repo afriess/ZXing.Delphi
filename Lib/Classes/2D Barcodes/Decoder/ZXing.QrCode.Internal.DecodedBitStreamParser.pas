@@ -19,13 +19,17 @@
 
 unit ZXing.QrCode.Internal.DecodedBitStreamParser;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
-uses 
+uses
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
   ZXing.BitSource,
-  SysUtils, 
   ZXing.DecodeHintType,
-  Generics.Collections,
   ZXing.QrCode.Internal.ErrorCorrectionLevel,
   ZXing.QrCode.Internal.Version,
   ZXing.DecoderResult,
@@ -343,7 +347,7 @@ begin
   then
      exit;
 
-  readBytes := TArray<Byte>.Create();
+  readBytes := TArray<Byte>.Create;
   SetLength(readBytes, count);
   for i := 0 to Pred(count) do
     readBytes[i] := Byte(bits.readBits(8));
@@ -391,7 +395,7 @@ begin
 
   // Each character will require 2 bytes. Read the characters as 2-byte pairs
   // and decode as GB2312 afterwards
-  buffer := TArray<Byte>.Create();
+  buffer := TArray<Byte>.Create;
   SetLength(buffer, 2 * count);
   offset := 0;
 
@@ -439,7 +443,7 @@ begin
 
   // Each character will require 2 bytes. Read the characters as 2-byte pairs
   // and decode as Shift_JIS afterwards
-  buffer := TArray<Byte>.Create();
+  buffer := TArray<Byte>.Create;
   SetLength(buffer, 2 * count);
   offset := 0;
 

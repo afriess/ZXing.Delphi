@@ -1,0 +1,151 @@
+object MainForm: TMainForm
+  Left = 277
+  Height = 494
+  Top = 153
+  Width = 559
+  HorzScrollBar.Page = 470
+  VertScrollBar.Page = 347
+  ActiveControl = bSource
+  Caption = 'Simple webcam and motion detection'
+  ClientHeight = 494
+  ClientWidth = 559
+  OnCreate = VideoCreate
+  OnDestroy = VideoDestroy
+  Position = poScreenCenter
+  LCLVersion = '1.9.0.0'
+  object pCapture: TPanel
+    Left = 0
+    Height = 397
+    Top = 80
+    Width = 559
+    Align = alClient
+    BevelOuter = bvLowered
+    FullRepaint = False
+    TabOrder = 0
+    OnResize = pCaptureResize
+  end
+  object stCapture: TStaticText
+    Left = 0
+    Height = 17
+    Top = 477
+    Width = 559
+    Align = alBottom
+    Alignment = taCenter
+    TabOrder = 2
+  end
+  object pControl: TPanel
+    Left = 0
+    Height = 80
+    Top = 0
+    Width = 559
+    Align = alTop
+    BevelInner = bvLowered
+    ClientHeight = 80
+    ClientWidth = 559
+    FullRepaint = False
+    TabOrder = 1
+    object bSource: TButton
+      Left = 8
+      Height = 57
+      Hint = 'Change video source and adjust settings'
+      Top = 8
+      Width = 53
+      Caption = '&Source'
+      OnClick = bSourceClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object bFormat: TButton
+      Left = 72
+      Height = 57
+      Hint = 'Slelect the image format for frames'
+      Top = 8
+      Width = 53
+      Caption = '&Format'
+      OnClick = bFormatClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+    object bReconnect: TButton
+      Left = 184
+      Height = 57
+      Hint = 'Update the driver information after changing the source'
+      Top = 8
+      Width = 53
+      Caption = '&Connect'
+      OnClick = bConnectClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+    end
+    object bQuality: TButton
+      Left = 128
+      Height = 57
+      Hint = 'Configure compression for recording'
+      Top = 8
+      Width = 53
+      Caption = '&Quality'
+      OnClick = bQualityClick
+      TabOrder = 3
+    end
+    object bRecord: TButton
+      Left = 240
+      Height = 57
+      Hint = 'Start/Stop recording'
+      Top = 8
+      Width = 53
+      Caption = '&Record'
+      OnClick = bRecordClick
+      TabOrder = 4
+    end
+    object BMotion: TButton
+      Left = 296
+      Height = 57
+      Top = 8
+      Width = 53
+      Caption = 'Motion'
+      OnClick = BMotionClick
+      TabOrder = 5
+    end
+    object SETreshold: TFloatSpinEdit
+      Left = 416
+      Height = 23
+      Top = 8
+      Width = 72
+      TabOrder = 6
+      Value = 5
+    end
+    object SETrigger: TFloatSpinEdit
+      Left = 416
+      Height = 23
+      Top = 40
+      Width = 72
+      TabOrder = 7
+      Value = 10
+    end
+    object Label1: TLabel
+      Left = 363
+      Height = 15
+      Top = 14
+      Width = 45
+      Caption = 'Treshold'
+      ParentColor = False
+    end
+    object Trigger: TLabel
+      Left = 368
+      Height = 15
+      Top = 47
+      Width = 37
+      Caption = 'Trigger'
+      ParentColor = False
+    end
+  end
+  object TMotion: TTimer
+    Enabled = False
+    OnTimer = TMotionTimer
+    Left = 60
+    Top = 40
+  end
+end

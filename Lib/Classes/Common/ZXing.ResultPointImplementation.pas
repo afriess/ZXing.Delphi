@@ -1,7 +1,13 @@
 unit ZXing.ResultPointImplementation;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
-uses system.SysUtils, 
+
+uses
+  {$ifndef FPC}System.{$endif}SysUtils,
      ZXing.ResultPoint;
 
 type

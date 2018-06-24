@@ -18,10 +18,14 @@
 
 unit ZXing.BinaryBitmap;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  {$ifndef FPC}System.{$endif}SysUtils,
   ZXing.Binarizer,
   ZXing.LuminanceSource,
   ZXing.Common.BitArray,

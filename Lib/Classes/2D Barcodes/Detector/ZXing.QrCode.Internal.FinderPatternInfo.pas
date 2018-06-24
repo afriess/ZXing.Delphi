@@ -19,6 +19,10 @@
 
 unit ZXing.QrCode.Internal.FinderPatternInfo;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses 

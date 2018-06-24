@@ -17,10 +17,14 @@ unit ZXing.Binarizer;
   * 2015-3 Adapted for Delphi/Object Pascal FireMonkey XE7 mobile by E.Spelt
 }
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  {$ifndef FPC}System.{$endif}SysUtils,
   ZXing.LuminanceSource,
   ZXing.Common.BitArray,
   ZXing.Common.BitMatrix;

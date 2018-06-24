@@ -19,12 +19,16 @@
 
 unit ZXing.OneD.Code128Reader;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
-  System.Math,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
+  Math,
   ZXing.Helpers,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
@@ -33,8 +37,11 @@ uses
   ZXing.ResultPoint,
   ZXing.BarcodeFormat;
 
+type
+  TIntegerArray=TArray<Integer>;
+
 var
-  CODE_PATTERNS: TArray<TArray<Integer>>;
+  CODE_PATTERNS: TArray<TIntegerArray>;
 
 type
   /// <summary>
@@ -140,7 +147,7 @@ begin
   width := row.Size;
   rowOffset := row.getNextSet(0);
   counterPosition := 0;
-  counters := TArray<Integer>.Create();
+  counters := TArray<Integer>.Create;
   SetLength(counters, 6);
   patternStart := rowOffset;
   isWhite := false;
@@ -605,7 +612,7 @@ begin
     // we fudged decoding CODE_STOP since it actually has 7 bars, not 6. There is a black bar left
     // to read off. Would be slightly better to properly read. Here we just skip it:
     nextStart := row.getNextUnset(nextStart);
-    if not row.isRange(nextStart, System.Math.Min(row.Size,
+    if not row.isRange(nextStart, Math.Min(row.Size,
       nextStart + (nextStart - lastStart) div 2), false) then
     begin
       result := nil;

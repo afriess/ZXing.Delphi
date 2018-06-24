@@ -19,11 +19,15 @@
 
 unit ZXing.Datamatrix.Internal.DecodedBitStreamParser;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
   ZXing.DecoderResult,
   ZXing.ByteSegments,
   ZXing.BitSource;
@@ -87,7 +91,7 @@ begin
 
   try
 
-    byteSegments.Add(TArray<Byte>.Create()); // TODO (KG): Validation
+    byteSegments.Add(TArray<Byte>.Create); // TODO (KG): Validation
     mode := TMode.ASCII_ENCODE;
     while ((mode <> TMode.PAD_ENCODE) and (bits.available() > 0)) do
     begin
@@ -356,7 +360,7 @@ begin
                       if (oneByte = 236) then
                       begin
                         // 05 Macro
-                        res.Append('[)>' + #$001E05 + #$001D);
+                        res.Append(RawByteString('[)>' + #$001E05 + #$001D));
                         res.Insert(0, #$001E + #$0004);
                       end
                       else
@@ -364,7 +368,7 @@ begin
                         if (oneByte = 237) then
                         begin
                           // 06 Macro
-                          res.Append('[)>' + #$001E06 + #$001D);
+                          res.Append(RawByteString('[)>' + #$001E06 + #$001D));
                           res.Insert(0, #$001E + #$0004);
                         end
                         else
@@ -460,7 +464,7 @@ begin
     exit;
   end;
 
-  bytes := TArray<Byte>.Create();
+  bytes := TArray<Byte>.Create;
   SetLength(bytes, Count);
 
   for i := 0 to Pred(Count) do

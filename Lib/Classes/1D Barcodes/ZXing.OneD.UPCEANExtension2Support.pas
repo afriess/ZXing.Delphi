@@ -18,12 +18,16 @@
 
 unit ZXing.OneD.UPCEANExtension2Support;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
-uses 
-  System.SysUtils, 
-  System.Generics.Collections, 
-  System.Math,
+uses
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
+  Math,
   ZXing.Reader,
   ZXing.BarcodeFormat,
   ZXing.BinaryBitmap,

@@ -19,13 +19,17 @@
 
 unit ZXing.Datamatrix.Internal.Detector;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Math,
-  System.Generics.Defaults,
-  System.Generics.Collections,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
+  {$ifndef FPC}System.{$endif}Generics.Defaults,
+  Math,
   ZXing.Common.BitMatrix,
   ZXing.DefaultGridSampler,
   ZXing.Common.DetectorResult,
@@ -67,7 +71,7 @@ type
     TResultPointsAndTransitionsComparator = class sealed
       (TComparer<TResultPointsAndTransitions>)
     public
-      function Compare(const o1, o2: TResultPointsAndTransitions)
+      function Compare(constref o1, o2: TResultPointsAndTransitions)
         : Integer; override;
     end;
 
@@ -281,7 +285,7 @@ begin
     else
     begin
       // The matrix is square
-      dimension := System.Math.Min(dimensionRight, dimensionTop);
+      dimension := Math.Min(dimensionRight, dimensionTop);
       // correct top right point to match the white module
       correctedTopRight := correctTopRight(bottomLeft, bottomRight, topLeft,
         topRight, dimension);
@@ -292,7 +296,7 @@ begin
       transA := transitionsBetween(topLeft, correctedTopRight);
       transB := transitionsBetween(bottomRight, correctedTopRight);
       dimensionCorrected :=
-        (System.Math.Max(transA.Transitions, transB.Transitions) + 1);
+        (Math.Max(transA.Transitions, transB.Transitions) + 1);
 
       transA.Free;
       transB.Free;
@@ -610,7 +614,7 @@ begin
 end;
 
 function TDataMatrixDetector.TResultPointsAndTransitionsComparator.Compare
-  (const o1, o2: TResultPointsAndTransitions): Integer;
+  (constref o1, o2: TResultPointsAndTransitions): Integer;
 begin
   Result := (o1.Transitions - o2.Transitions);
 end;

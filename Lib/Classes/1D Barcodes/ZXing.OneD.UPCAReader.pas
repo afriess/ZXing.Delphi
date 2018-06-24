@@ -18,11 +18,15 @@ unit ZXing.OneD.UPCAReader;
   * Delphi Implementation by E. Spelt
 }
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
   Math,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,

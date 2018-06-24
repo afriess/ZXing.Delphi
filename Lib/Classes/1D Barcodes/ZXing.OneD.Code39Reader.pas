@@ -18,11 +18,15 @@ unit ZXing.OneD.Code39Reader;
   * Implemented by Nano103 and E. Spelt for Delphi
 }
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
   Math,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
@@ -83,7 +87,7 @@ begin
 
   ASTERISK_ENCODING := TCode39Reader.CHARACTER_ENCODINGS[$27];
 
-  counters := TArray<Integer>.Create();
+  counters := TArray<Integer>.Create;
   SetLength(counters, 9);
   decodeRowResult := TStringBuilder.Create();
   usingCheckDigit := AUsingCheckDigit;

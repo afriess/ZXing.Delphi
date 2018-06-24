@@ -18,10 +18,15 @@ unit ZXing.Common.Detector.MathUtils;
   * Implemented by E. Spelt for Delphi
   * Restructured by K. Gossens
 }
+
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses 
-  System.SysUtils;
+  {$ifndef FPC}System.{$endif}SysUtils;
 
 type
   TMathUtils = class sealed

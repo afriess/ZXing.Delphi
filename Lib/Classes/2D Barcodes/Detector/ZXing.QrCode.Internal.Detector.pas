@@ -19,12 +19,16 @@
 
 unit ZXing.QrCode.Internal.Detector;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Math,
-  Generics.Collections,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
+  Math,
   ZXing.Common.BitMatrix,
   ZXing.ResultPoint,
   ZXing.Common.DetectorResult,
@@ -352,17 +356,17 @@ begin
   Result := nil;
 
   allowance := Floor(allowanceFactor * overallEstModuleSize);
-  alignmentAreaLeftX := System.Math.Max(0, (estAlignmentX - allowance));
-  alignmentAreaRightX := System.Math.Min((FImage.Width - 1),
+  alignmentAreaLeftX := Math.Max(0, (estAlignmentX - allowance));
+  alignmentAreaRightX := Math.Min((FImage.Width - 1),
     (estAlignmentX + allowance));
 
   if ((alignmentAreaRightX - alignmentAreaLeftX) < (overallEstModuleSize * 3))
   then
     exit;
 
-  alignmentAreaTopY := System.Math.Max(0, (estAlignmentY - allowance));
+  alignmentAreaTopY := Math.Max(0, (estAlignmentY - allowance));
 
-  alignmentAreaBottomY := System.Math.Min((FImage.Height - 1),
+  alignmentAreaBottomY := Math.Min((FImage.Height - 1),
     (estAlignmentY + allowance));
 
   alignmentFinder := TAlignmentPatternFinder.Create(FImage, alignmentAreaLeftX,

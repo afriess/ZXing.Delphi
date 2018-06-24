@@ -19,6 +19,10 @@
 
 unit ZXing.Common.BitArray;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 type

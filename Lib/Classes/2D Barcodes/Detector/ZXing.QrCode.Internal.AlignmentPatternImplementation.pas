@@ -20,6 +20,9 @@
 
 unit ZXing.QrCode.Internal.AlignmentPatternImplementation;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
 
 interface
 

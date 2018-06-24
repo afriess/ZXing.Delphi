@@ -19,9 +19,14 @@
 
 unit ZXing.QrCode.Internal.ErrorCorrectionLevel;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
-uses SysUtils;
+uses
+  {$ifndef FPC}System.{$endif}SysUtils;
 
 type
   /// <summary>

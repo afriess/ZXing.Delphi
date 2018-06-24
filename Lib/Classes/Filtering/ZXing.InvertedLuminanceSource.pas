@@ -19,10 +19,14 @@
 
 unit ZXing.InvertedLuminanceSource;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  {$ifndef FPC}System.{$endif}SysUtils,
   ZXing.LuminanceSource;
 
 type
@@ -101,7 +105,7 @@ begin
   begin
     matrixArray := delegate.Matrix;
     len := Self.Width * Self.Height;
-    invertedMatrix := TArray<Byte>.Create();
+    invertedMatrix := TArray<Byte>.Create;
     SetLength(invertedMatrix, len);
     for i := 0 to Pred(len) do
       invertedMatrix[i] := (255 - (matrixArray[i] and $FF));

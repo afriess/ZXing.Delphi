@@ -20,12 +20,16 @@
 
 unit ZXing.QrCode.Internal.FormatInformation;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  Generics.Collections,
+  {$ifndef FPC}System.{$endif}Classes,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
   ZXing.QrCode.Internal.ErrorCorrectionLevel,
-  Classes,
   ZXing.Common.Detector.MathUtils;
 
 type

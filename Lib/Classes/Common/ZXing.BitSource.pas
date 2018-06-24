@@ -17,10 +17,14 @@ unit ZXing.BitSource;
 
   * Implemented by E. Spelt for Delphi
 }
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
-uses 
-  SysUtils, 
+uses
+  {$ifndef FPC}System.{$endif}SysUtils,
   ZXing.Common.Detector.MathUtils;
 
 type

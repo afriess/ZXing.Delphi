@@ -19,11 +19,15 @@
 
 unit ZXing.Datamatrix.DataMatrixReader;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
   ZXing.Common.Detector.MathUtils,
   Math,
   ZXing.Common.BitArray,
@@ -77,6 +81,7 @@ type
   end;
 
 implementation
+
 uses ZXing.ByteSegments;
 
 { TDataMatrixReader }
@@ -85,7 +90,7 @@ constructor TDataMatrixReader.Create;
 begin
   inherited;
   FDecoder := TDataMatrixDecoder.Create;
-  NO_POINTS := TArray<IResultPoint>.Create();
+  NO_POINTS := TArray<IResultPoint>.Create;
 end;
 
 destructor TDataMatrixReader.Destroy;

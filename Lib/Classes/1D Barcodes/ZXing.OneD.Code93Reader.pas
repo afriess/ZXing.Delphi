@@ -19,11 +19,15 @@
 
 unit ZXing.OneD.Code93Reader;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
   Math,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
@@ -85,7 +89,7 @@ begin
 
   ASTERISK_ENCODING := TCode93Reader.CHARACTER_ENCODINGS[$2F];
 
-  counters := TArray<Integer>.Create();
+  counters := TArray<Integer>.Create;
   SetLength(counters, 6);
   decodeRowResult := TStringBuilder.Create();
 end;

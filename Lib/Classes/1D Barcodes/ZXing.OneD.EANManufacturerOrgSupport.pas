@@ -19,13 +19,17 @@
 
 unit ZXing.OneD.EANManufacturerOrgSupport;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Classes,
-  System.Generics.Collections,
-  System.Math,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Classes,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
+  Math,
   ZXing.OneD.UPCEANExtension2Support,
   ZXing.OneD.UPCEANExtension5Support,
   ZXing.Reader,
@@ -38,6 +42,8 @@ uses
   ZXing.Common.Detector.MathUtils;
 
 type
+  TIntegerArray=TArray<Integer>;
+
   // <summary>
   /// Records EAN prefix to GS1 Member Organization, where the member organization
   /// correlates strongly with a country. This is an imperfect means of identifying
@@ -48,10 +54,10 @@ type
   TEANManufacturerOrgSupport = class sealed
   private
   var
-    ranges: TList<TArray<Integer>>;
+    ranges: TList<TIntegerArray>;
     countryIdentifiers: TStringList;
 
-    procedure add(const range: TArray<Integer>; const id: string);
+    procedure add(const range: TIntegerArray; const id: string);
     procedure initIfNeeded;
   public
     constructor Create;
@@ -66,7 +72,7 @@ implementation
 
 constructor TEANManufacturerOrgSupport.Create;
 begin
-  ranges := TList < TArray < Integer >>.Create;
+  ranges := TList<TIntegerArray>.Create;
   countryIdentifiers := TStringList.Create;
 end;
 
@@ -81,7 +87,7 @@ function TEANManufacturerOrgSupport.lookupCountryIdentifier(const productCode
   : String): String;
 var
   i, prefix, max: Integer;
-  range: TArray<Integer>;
+  range: TIntegerArray;
   start, ending: Integer;
 begin
   Result := '';
@@ -107,7 +113,7 @@ begin
   end;
 end;
 
-procedure TEANManufacturerOrgSupport.add(const range: TArray<Integer>;
+procedure TEANManufacturerOrgSupport.add(const range: TIntegerArray;
   const id: string);
 begin
   ranges.add(range);
@@ -118,10 +124,10 @@ procedure TEANManufacturerOrgSupport.initIfNeeded;
 begin
   if (ranges.Count = 0) then
   begin
-    add(TArray<Integer>.Create(0, 19), 'US/CA');
-    add(TArray<Integer>.Create(30, 39), 'US');
-    add(TArray<Integer>.Create(60, 139), 'US/CA');
-    add(TArray<Integer>.Create(300, 379), 'FR');
+    add(TIntegerArray.Create(0, 19), 'US/CA');
+    add(TIntegerArray.Create(30, 39), 'US');
+    add(TIntegerArray.Create(60, 139), 'US/CA');
+    add(TIntegerArray.Create(300, 379), 'FR');
     add(TArray<Integer>.Create(380), 'BG');
     add(TArray<Integer>.Create(383), 'SI');
     add(TArray<Integer>.Create(385), 'HR');

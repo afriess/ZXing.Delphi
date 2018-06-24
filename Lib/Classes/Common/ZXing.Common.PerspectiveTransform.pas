@@ -20,10 +20,14 @@
 
 unit ZXing.Common.PerspectiveTransform;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils;
+  {$ifndef FPC}System.{$endif}SysUtils;
 
 type
   /// <summary> <p>This class implements a perspective transform in two dimensions. Given four source and four

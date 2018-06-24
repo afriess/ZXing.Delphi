@@ -17,9 +17,16 @@ unit ZXing.Helpers;
 
   * Implemented by E. Spelt for Delphi
 }
+
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 type
+  TIntegerArray = TArray<Integer>;
+
   TArray = class
     class function Clone(original: TArray<Integer>): TArray<Integer>; static;
     class function CopyInSameArray(const Input: TArray<Integer>;
@@ -34,7 +41,7 @@ var
   l: SmallInt;
 begin
   l := Length(original);
-  Result := TArray<Integer>.Create();
+  Result := TArray<Integer>.Create;
   SetLength(Result, l);
 
   for i := 0 to l - 1 do

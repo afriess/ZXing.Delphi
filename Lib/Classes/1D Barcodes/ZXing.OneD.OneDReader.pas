@@ -19,11 +19,15 @@
 
 unit ZXing.OneD.OneDReader;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
   Math,
   ZXing.Reader,
   ZXing.BinaryBitmap,
@@ -57,24 +61,6 @@ type
       hints: TDictionary<TDecodeHintType, TObject>): TReadResult;
     class procedure InitializeClass; static;
   protected
-    class var INTEGER_MATH_SHIFT: Integer;
-    class var PATTERN_MATCH_RESULT_SCALE_FACTOR: Integer;
-
-    /// <summary>
-    /// Determines how closely a set of observed counts of runs of black/white values matches a given
-    /// target pattern. This is reported as the ratio of the total variance from the expected pattern
-    /// proportions across all pattern elements, to the length of the pattern.
-    /// </summary>
-    /// <param name="counters">observed counters</param>
-    /// <param name="pattern">expected pattern</param>
-    /// <param name="maxIndividualVariance">The most any counter can differ before we give up</param>
-    /// <returns>ratio of total variance between counters and pattern compared to total pattern size,
-    /// where the ratio has been multiplied by 256. So, 0 means no variance (perfect match); 256 means
-    /// the total variance between counters and patterns equals the pattern length, higher values mean
-    /// even more variance</returns>
-    class function patternMatchVariance(counters, pattern: TArray<Integer>;
-      maxIndividualVariance: Integer): Integer; static;
-
     /// <summary>
     /// Records the pattern in reverse.
     /// </summary>
@@ -99,6 +85,24 @@ type
       counters: TArray<Integer>; numCounters: Integer): Boolean;
       overload; static;
   public
+    class var INTEGER_MATH_SHIFT: Integer;
+    class var PATTERN_MATCH_RESULT_SCALE_FACTOR: Integer;
+
+      /// <summary>
+      /// Determines how closely a set of observed counts of runs of black/white values matches a given
+      /// target pattern. This is reported as the ratio of the total variance from the expected pattern
+      /// proportions across all pattern elements, to the length of the pattern.
+      /// </summary>
+      /// <param name="counters">observed counters</param>
+      /// <param name="pattern">expected pattern</param>
+      /// <param name="maxIndividualVariance">The most any counter can differ before we give up</param>
+      /// <returns>ratio of total variance between counters and pattern compared to total pattern size,
+      /// where the ratio has been multiplied by 256. So, 0 means no variance (perfect match); 256 means
+      /// the total variance between counters and patterns equals the pattern length, higher values mean
+      /// even more variance</returns>
+      class function patternMatchVariance(counters, pattern: TArray<Integer>;
+        maxIndividualVariance: Integer): Integer; static;
+
     /// <summary>
     /// Resets any internal state the implementation has after a decode, to prepare it
     /// for reuse.

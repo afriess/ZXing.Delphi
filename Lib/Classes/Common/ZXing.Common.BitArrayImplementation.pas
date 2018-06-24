@@ -1,16 +1,21 @@
 unit ZXing.Common.BitArrayImplementation;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
+
 uses ZXing.Common.BitArray;
 
 function NewBitArray:IBitArray; overload;
 function NewBitArray(const Size: Integer):IBitArray; overload;
 
 implementation
-uses
-  System.SysUtils,
-  ZXing.Common.Detector.MathUtils;
 
+uses
+  {$ifndef FPC}System.{$endif}SysUtils,
+  ZXing.Common.Detector.MathUtils;
 
 type
   /// <summary>

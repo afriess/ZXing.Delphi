@@ -19,10 +19,14 @@
 
 unit ZXing.Datamatrix.Internal.DataBlock;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
-uses 
-  System.SysUtils, 
+uses
+  {$ifndef FPC}System.{$endif}SysUtils,
   ZXing.Datamatrix.Internal.Version;
   
 type
@@ -99,7 +103,7 @@ begin
   end;
     
   // Now establish DataBlocks of the appropriate size and number of data codewords
-  result := TArray<TDataBlock>.Create();
+  result := TArray<TDataBlock>.Create;
   SetLength(result, totalBlocks);
   numResultBlocks := 0;
 
@@ -109,7 +113,7 @@ begin
 	  begin
       numDataCodewords := ecBlock.DataCodewords;
       numBlockCodewords := (ecBlocks.ECCodewords + numDataCodewords);
-      byteArray := TArray<Byte>.Create();
+      byteArray := TArray<Byte>.Create;
       SetLength(byteArray, numBlockCodewords);
       result[numResultBlocks] := TDataBlock.Create(byteArray, numDataCodewords);
       Inc(numResultBlocks);

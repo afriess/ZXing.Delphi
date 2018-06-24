@@ -19,15 +19,24 @@
 
 unit ZXing.BaseLuminanceSource;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
+
 uses
-  System.SysUtils,
-  System.UITypes,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}UITypes,
+  {$ifndef FPC}
 {$IFDEF USE_VCL_BITMAP}
   VCL.Graphics,
 {$ELSE}
   FMX.Graphics,
 {$ENDIF}
+{$else}
+Graphics,
+{$endif}
   ZXing.LuminanceSource,
   ZXing.InvertedLuminanceSource;
 
@@ -75,7 +84,7 @@ constructor TBaseLuminanceSource.Create(const width, height: Integer);
 begin
   inherited Create(width, height);
   
-  luminances := TArray<Byte>.Create();
+  luminances := TArray<Byte>.Create;
   SetLength(luminances, (width * height));
 end;
 
@@ -89,7 +98,7 @@ constructor TBaseLuminanceSource.Create(const luminanceArray: TArray<Byte>;
   const width, height: Integer);
 begin
   Self.Create(width, height);
-  Copy(luminanceArray, 0, Length(luminances));
+  {$ifndef FPC}Copy(luminanceArray, 0, Length(luminances));{$endif}
 end;
 
 /// <summary>
@@ -113,7 +122,7 @@ begin
   if ((row = nil) or (Length(row) < width)) then
   begin
     row := nil;
-    row := TArray<Byte>.Create();
+    row := TArray<Byte>.Create;
     SetLength(row, width);
   end;
 
@@ -144,7 +153,7 @@ var
   yold, ynew,
   xold, xnew : Integer;
 begin
-  rotatedLuminances := TArray<Byte>.Create();
+  rotatedLuminances := TArray<Byte>.Create;
   SetLength(rotatedLuminances, (Width * Height));
 
   newWidth := Height;
@@ -208,7 +217,7 @@ begin
   then
      raise EArgumentException.Create('Crop rectangle does not fit within image data.');
 
-  croppedLuminances := TArray<Byte>.Create();
+  croppedLuminances := TArray<Byte>.Create;
   SetLength(croppedLuminances, (width * height));
   oldLuminances := Self.Matrix;
   oldWidth := Self.Width;

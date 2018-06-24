@@ -19,10 +19,14 @@
 
 unit ZXing.LuminanceSource;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils;
+  {$ifndef FPC}System.{$endif}SysUtils;
 
 type
   /// <summary>
@@ -180,7 +184,7 @@ var
   luminance: Integer;
   c: char;
 begin
-  row := TArray<Byte>.Create();
+  row := TArray<Byte>.Create;
   SetLength(row, FWidth);
 
   res := TStringBuilder.Create(height * (width + 1));

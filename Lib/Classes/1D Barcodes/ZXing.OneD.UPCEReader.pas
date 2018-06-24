@@ -18,11 +18,15 @@ unit ZXing.OneD.UPCEReader;
   * Delphi Implementation by E. Spelt
 }
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
   Math,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
@@ -36,13 +40,14 @@ uses
   ZXing.OneD.UPCEANReader;
 
 type
+  TIntegerArray=TArray<Integer>;
 
-  T2DIntArray = TArray<TArray<Integer>>;
+  T2DIntArray = TArray<TIntegerArray>;
 
   TUPCEReader = class(TUPCEANReader)
   private
-    class var decodeMiddleCounters: TArray<Integer>;
-    class var MIDDLE_END_PATTERN: TArray<Integer>;
+    class var decodeMiddleCounters: TIntegerArray;
+    class var MIDDLE_END_PATTERN: TIntegerArray;
     class var NUMSYS_AND_CHECK_DIGIT_PATTERNS: T2DIntArray;
 
     class procedure DoInitialize();
@@ -54,11 +59,11 @@ type
 
     class function checkChecksum(const s: string): boolean; override;
     class function decodeEnd(const row: IBitArray; const endStart: Integer)
-      : TArray<Integer>; override;
+      : TIntegerArray; override;
 
   public
     class function DecodeMiddle(const row: IBitArray;
-      const startRange: TArray<Integer>; const res: TStringBuilder)
+      const startRange: TIntegerArray; const res: TStringBuilder)
       : Integer; override;
 
   public
@@ -149,18 +154,18 @@ begin
 end;
 
 class function TUPCEReader.decodeEnd(const row: IBitArray;
-  const endStart: Integer): TArray<Integer>;
+  const endStart: Integer): TIntegerArray;
 begin
   Result := TUPCEANReader.findGuardPattern(row, endStart, true,
     TUPCEReader.MIDDLE_END_PATTERN);
 end;
 
 class function TUPCEReader.DecodeMiddle(const row: IBitArray;
-  const startRange: TArray<Integer>; const res: TStringBuilder): Integer;
+  const startRange: TIntegerArray; const res: TStringBuilder): Integer;
 var
   bestMatch: Integer;
   counter, ending, lgPatternFound, rowOffset, x: Integer;
-  counters: TArray<Integer>;
+  counters: TIntegerArray;
 begin
 
   counters := self.decodeMiddleCounters;
@@ -209,12 +214,12 @@ end;
 
 class procedure TUPCEReader.DoInitialize;
 begin
-  MIDDLE_END_PATTERN := TArray<Integer>.Create(1, 1, 1, 1, 1, 1);
+  MIDDLE_END_PATTERN := TIntegerArray.Create(1, 1, 1, 1, 1, 1);
   NUMSYS_AND_CHECK_DIGIT_PATTERNS :=
-    T2DIntArray.Create(TArray<Integer>.Create($38, $34, 50, $31, $2C, $26, $23,
-    $2A, $29, $25), TArray<Integer>.Create(7, 11, 13, 14, $13, $19, $1C, $15,
+    T2DIntArray.Create(TIntegerArray.Create($38, $34, 50, $31, $2C, $26, $23,
+    $2A, $29, $25), TIntegerArray.Create(7, 11, 13, 14, $13, $19, $1C, $15,
     $16, $1A));
-  decodeMiddleCounters := TArray<Integer>.Create(0,0,0,0);
+  decodeMiddleCounters := TIntegerArray.Create(0,0,0,0);
 end;
 
 class procedure TUPCEReader.DoFinalize;

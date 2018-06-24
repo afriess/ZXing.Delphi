@@ -21,9 +21,14 @@ unit ZXing.Common.ReedSolomon.GenericGF;
 
 // ES: two classes in one unit. This is to avoid circulair reference.
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
-uses SysUtils;
+uses
+  {$ifndef FPC}System.{$endif}SysUtils;
 
 type
   TGenericGFPoly = class;
@@ -155,8 +160,8 @@ begin
   Fsize := size;
 
   FGeneratorBase := genBase;
-  self.FexpTable := TArray<Integer>.Create();
-  self.FlogTable := TArray<Integer>.Create();
+  self.FexpTable := TArray<Integer>.Create;
+  self.FlogTable := TArray<Integer>.Create;
 
   SetLength(self.FexpTable, size);
   SetLength(self.FlogTable, size);
@@ -214,7 +219,7 @@ begin
     exit
   end;
 
-  coefficients := TArray<Integer>.Create();
+  coefficients := TArray<Integer>.Create;
   SetLength(coefficients, degree + 1);
   coefficients[0] := coefficient;
 
@@ -335,7 +340,7 @@ begin
       inc(firstNonZero)
     end;
 
-    Fcoefficients := TArray<Integer>.Create();
+    Fcoefficients := TArray<Integer>.Create;
     if (firstNonZero = coefficientsLength) then
     begin
       SetLength(Fcoefficients, 1);
@@ -391,7 +396,7 @@ begin
     largerCoefficients := temp
   end;
 
-  sumDiff := TArray<Integer>.Create();
+  sumDiff := TArray<Integer>.Create;
   SetLength(sumDiff, Length(largerCoefficients));
   lengthDiff := Length(largerCoefficients) - Length(smallerCoefficients);
 
@@ -515,7 +520,7 @@ begin
   aLength := Length(aCoefficients);
   bCoefficients := other.coefficients;
   bLength := Length(bCoefficients);
-  product := TArray<Integer>.Create();
+  product := TArray<Integer>.Create;
   SetLength(product, (aLength + bLength) - 1);
   i := 0;
 
@@ -555,7 +560,7 @@ begin
   end;
 
   size := Length(self.coefficients);
-  product := TArray<Integer>.Create();
+  product := TArray<Integer>.Create;
   SetLength(product, size);
   i := 0;
   while ((i < size)) do
@@ -584,7 +589,7 @@ begin
   end;
 
   size := Length(self.coefficients);
-  product := TArray<Integer>.Create();
+  product := TArray<Integer>.Create;
   SetLength(product, size + degree);
   i := 0;
 

@@ -18,10 +18,14 @@
 }
 unit ZXing.ReadResult;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  {$ifndef FPC}System.{$endif}SysUtils,
   Generics.Collections,
   ZXing.ResultPoint,
   ZXing.ResultMetadataType,
@@ -326,7 +330,7 @@ begin
   begin
     if (newPoints <> nil) and (Length(newPoints) > 0) then
     begin
-      allPoints := TArray<IResultPoint>.Create();
+      allPoints := TArray<IResultPoint>.Create;
       SetLength(allPoints, (Length(oldPoints) + Length(newPoints)));
 
       Move(oldPoints[0], newPoints[0], Length(oldPoints));

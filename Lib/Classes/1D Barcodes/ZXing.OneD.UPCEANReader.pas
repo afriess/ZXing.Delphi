@@ -20,12 +20,16 @@
 
 unit ZXing.OneD.UPCEANReader;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
-  System.Math,
+  {$ifndef FPC}System.{$endif}SysUtils,
+  {$ifndef FPC}System.{$endif}Generics.Collections,
+  Math,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
   ZXing.OneD.UPCEANExtensionSupport,
@@ -37,6 +41,7 @@ uses
   ZXing.BarcodeFormat;
 
 type
+  TIntegerArray=TArray<Integer>;
   /// <summary>
   /// <p>Encapsulates functionality and implementation that is common to UPC and EAN families
   /// of one-dimensional barcodes.</p>
@@ -58,8 +63,8 @@ type
     /// <param name="counters">array of counters, as long as pattern, to re-use</param>
     /// <returns>start/end horizontal offset of guard pattern, as an array of two ints</returns>
     class function findGuardPattern(const row: IBitArray; rowOffset: Integer;
-      const whiteFirst: Boolean; const pattern: TArray<Integer>;
-      counters: TArray<Integer>): TArray<Integer>; overload;
+      const whiteFirst: Boolean; const pattern: TIntegerArray;
+      counters: TIntegerArray): TIntegerArray; overload;
 
     /// <summary>
     /// Computes the UPC/EAN checksum on a string of digits, and reports
@@ -83,17 +88,7 @@ type
     /// <summary>
     /// Start/end guard pattern.
     /// </summary>
-    START_END_PATTERN: TArray<Integer>;
-
-    /// <summary>
-    /// Pattern marking the middle of a UPC/EAN pattern, separating the two halves.
-    /// </summary>
-    MIDDLE_PATTERN: TArray<Integer>;
-
-    /// <summary>
-    /// "Odd", or "L" patterns used to encode UPC/EAN digits.
-    /// </summary>
-    L_PATTERNS: TArray<TArray<Integer>>;
+    START_END_PATTERN: TIntegerArray;
 
     /// <summary>
     /// Decodes the end.
@@ -102,7 +97,7 @@ type
     /// <param name="endStart">The end start.</param>
     /// <returns></returns>
     class function decodeEnd(const row: IBitArray; const endStart: Integer)
-      : TArray<Integer>; virtual;
+      : TIntegerArray; virtual;
 
     /// <summary>
     /// </summary>
@@ -114,7 +109,17 @@ type
     /// <summary>
     /// As above but also including the "even", or "G" patterns used to encode UPC/EAN digits.
     /// </summary>
-      L_AND_G_PATTERNS: TArray<TArray<Integer>>;
+    L_AND_G_PATTERNS: TArray<TIntegerArray>;
+
+      /// <summary>
+    /// Pattern marking the middle of a UPC/EAN pattern, separating the two halves.
+    /// </summary>
+    MIDDLE_PATTERN: TIntegerArray;
+
+    /// <summary>
+    /// "Odd", or "L" patterns used to encode UPC/EAN digits.
+    /// </summary>
+    L_PATTERNS: TArray<TIntegerArray>;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TUPCEANReader"/> class.
@@ -131,7 +136,7 @@ type
     /// <param name="resultString"><see cref="StringBuilder" />to append decoded chars to</param>
     /// <returns>horizontal offset of first pixel after the "middle" that was decoded or -1 if decoding could not complete successfully</returns>
     class function DecodeMiddle(const row: IBitArray;
-      const startRange: TArray<Integer>; const resultString: TStringBuilder)
+      const startRange: TIntegerArray; const resultString: TStringBuilder)
       : Integer; virtual; abstract;
 
     /// <summary>
@@ -141,11 +146,11 @@ type
     function BarcodeFormat: TBarcodeFormat; virtual; abstract;
 
     class function findStartGuardPattern(const row: IBitArray)
-      : TArray<Integer>; static;
+      : TIntegerArray; static;
 
     class function findGuardPattern(const row: IBitArray;
       const rowOffset: Integer; const whiteFirst: Boolean;
-      const pattern: TArray<Integer>): TArray<Integer>; overload;
+      const pattern: TIntegerArray): TIntegerArray; overload;
 
     /// <summary>
     /// Attempts to decode a single UPC/EAN-encoded digit.
@@ -158,8 +163,8 @@ type
     /// be used
     /// <returns>horizontal offset of first pixel beyond the decoded digit</returns>
     class function decodeDigit(const row: IBitArray;
-      const counters: TArray<Integer>; const rowOffset: Integer;
-      const patterns: TArray<TArray<Integer>>; var digit: Integer): Boolean;
+      const counters: TIntegerArray; const rowOffset: Integer;
+      const patterns: TArray<TIntegerArray>; var digit: Integer): Boolean;
 
     /// <summary>
     /// <p>Attempts to decode a one-dimensional barcode format given a single row of
@@ -186,7 +191,7 @@ type
     /// <param name="hints">optional hints that influence decoding</param>
     /// <returns><see cref="TReadResult"/> encapsulating the result of decoding a barcode in the row</returns>
     function DoDecodeRow(const rowNumber: Integer; const row: IBitArray;
-      const startGuardRange: TArray<Integer>;
+      const startGuardRange: TIntegerArray;
       const hints: TDictionary<TDecodeHintType, TObject>): TReadResult;
 
   end;
@@ -215,27 +220,27 @@ end;
 class procedure TUPCEANReader.InitializeClass;
 var
   i, j: Integer;
-  widths, reversedWidths: TArray<Integer>;
+  widths, reversedWidths: TIntegerArray;
 begin
   MAX_AVG_VARIANCE :=
     Trunc(TOneDReader.PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.48);
   MAX_INDIVIDUAL_VARIANCE :=
     Trunc(TOneDReader.PATTERN_MATCH_RESULT_SCALE_FACTOR * 0.7);
 
-  START_END_PATTERN := TArray<Integer>.Create(1, 1, 1);
-  MIDDLE_PATTERN := TArray<Integer>.Create(1, 1, 1, 1, 1);
+  START_END_PATTERN := TIntegerArray.Create(1, 1, 1);
+  MIDDLE_PATTERN := TIntegerArray.Create(1, 1, 1, 1, 1);
 
-  L_PATTERNS := TArray < TArray < Integer >>
-    .Create(TArray<Integer>.Create(3, 2, 1, 1), // 0
-    TArray<Integer>.Create(2, 2, 2, 1), // 1
-    TArray<Integer>.Create(2, 1, 2, 2), // 2
-    TArray<Integer>.Create(1, 4, 1, 1), // 3
-    TArray<Integer>.Create(1, 1, 3, 2), // 4
-    TArray<Integer>.Create(1, 2, 3, 1), // 5
-    TArray<Integer>.Create(1, 1, 1, 4), // 6
-    TArray<Integer>.Create(1, 3, 1, 2), // 7
-    TArray<Integer>.Create(1, 2, 1, 3), // 8
-    TArray<Integer>.Create(3, 1, 1, 2) // 9
+  L_PATTERNS := TArray<TIntegerArray>
+    .Create(TIntegerArray.Create(3, 2, 1, 1), // 0
+    TIntegerArray.Create(2, 2, 2, 1), // 1
+    TIntegerArray.Create(2, 1, 2, 2), // 2
+    TIntegerArray.Create(1, 4, 1, 1), // 3
+    TIntegerArray.Create(1, 1, 3, 2), // 4
+    TIntegerArray.Create(1, 2, 3, 1), // 5
+    TIntegerArray.Create(1, 1, 1, 4), // 6
+    TIntegerArray.Create(1, 3, 1, 2), // 7
+    TIntegerArray.Create(1, 2, 1, 3), // 8
+    TIntegerArray.Create(3, 1, 1, 2) // 9
     );
 
   L_AND_G_PATTERNS := L_PATTERNS;
@@ -245,7 +250,7 @@ begin
   for i := 10 to Pred(20) do
   begin
     widths := L_PATTERNS[(i - 10)];
-    reversedWidths := TArray<Integer>.Create();
+    reversedWidths := TIntegerArray.Create;
     SetLength(reversedWidths, Length(widths));
     for j := 0 to Pred(Length(widths)) do
       reversedWidths[j] := widths[((Length(widths) - j) - 1)];
@@ -306,16 +311,16 @@ begin
 end;
 
 class function TUPCEANReader.decodeEnd(const row: IBitArray;
-  const endStart: Integer): TArray<Integer>;
+  const endStart: Integer): TIntegerArray;
 begin
   Result := findGuardPattern(row, endStart, false, START_END_PATTERN);
 end;
 
 class function TUPCEANReader.findStartGuardPattern(const row: IBitArray)
-  : TArray<Integer>;
+  : TIntegerArray;
 var
   foundStart: Boolean;
-  startRange, counters: TArray<Integer>;
+  startRange, counters: TIntegerArray;
   nextStart, start, quietStart, idx, l: Integer;
 begin
   Result := nil;
@@ -323,7 +328,7 @@ begin
   foundStart := false;
   startRange := nil;
   nextStart := 0;
-  counters := TArray<Integer>.Create();
+  counters := TIntegerArray.Create;
   l := Length(START_END_PATTERN);
   SetLength(counters, l);
   while (not foundStart) do
@@ -350,24 +355,24 @@ end;
 
 class function TUPCEANReader.findGuardPattern(const row: IBitArray;
   const rowOffset: Integer; const whiteFirst: Boolean;
-  const pattern: TArray<Integer>): TArray<Integer>;
+  const pattern: TIntegerArray): TIntegerArray;
 var
-  counters: TArray<Integer>;
+  counters: TIntegerArray;
 begin
-  counters := TArray<Integer>.Create();
+  counters := TIntegerArray.Create;
   SetLength(counters, Length(pattern));
   Result := findGuardPattern(row, rowOffset, whiteFirst, pattern, counters);
   counters:=nil;
 end;
 
 class function TUPCEANReader.findGuardPattern(const row: IBitArray;
-  rowOffset: Integer; const whiteFirst: Boolean; const pattern: TArray<Integer>;
-  counters: TArray<Integer>): TArray<Integer>;
+  rowOffset: Integer; const whiteFirst: Boolean; const pattern: TIntegerArray;
+  counters: TIntegerArray): TIntegerArray;
 var
   patternLength, width, x: Integer;
   isWhite: Boolean;
   counterPosition, patternStart: Integer;
-  curCounter: TArray<Integer>;
+  curCounter: TIntegerArray;
 begin
   Result := nil;
 
@@ -392,13 +397,13 @@ begin
         if (patternMatchVariance(counters, pattern, MAX_INDIVIDUAL_VARIANCE) <
           MAX_AVG_VARIANCE) then
         begin
-          Result := TArray<Integer>.Create(patternStart, x);
+          Result := TIntegerArray.Create(patternStart, x);
           break;
         end;
         Inc(patternStart, (counters[0] + counters[1]));
-        curCounter := TArray<Integer>.Create();
+        curCounter := TIntegerArray.Create;
         SetLength(curCounter, Length(counters));
-        TArray.Copy<Integer>(counters, curCounter, 2, 0, (patternLength - 2));
+        //TArray.Copy<Integer>(counters, curCounter, 2, 0, (patternLength - 2)); ALF
         { curCounter[patternLength - 2] := 0;
           curCounter[patternLength - 1] := 0; }
         counters := curCounter;
@@ -413,11 +418,11 @@ begin
 end;
 
 class function TUPCEANReader.decodeDigit(const row: IBitArray;
-  const counters: TArray<Integer>; const rowOffset: Integer;
-  const patterns: TArray<TArray<Integer>>; var digit: Integer): Boolean;
+  const counters: TIntegerArray; const rowOffset: Integer;
+  const patterns: TArray<TIntegerArray>; var digit: Integer): Boolean;
 var
   bestVariance, variance, i, max: Integer;
-  pattern: TArray<Integer>;
+  pattern: TIntegerArray;
 begin
   Result := false;
 
@@ -445,7 +450,7 @@ end;
 function TUPCEANReader.decodeRow(const rowNumber: Integer; const row: IBitArray;
   const hints: TDictionary<TDecodeHintType, TObject>): TReadResult;
 var
-  startRange: TArray<Integer>;
+  startRange: TIntegerArray;
 begin
   startRange := findStartGuardPattern(row);
   if startRange = nil then
@@ -457,14 +462,14 @@ end;
 function TUPCEANReader.DoDecodeRow(const rowNumber: Integer;
   const row: IBitArray;
 
-  const startGuardRange: TArray<Integer>;
+  const startGuardRange: TIntegerArray;
   const hints: TDictionary<TDecodeHintType, TObject>): TReadResult;
 var
   len: Integer;
   res: TStringBuilder;
   resultString: String;
   endStart, ending, quietEnd: Integer;
-  endRange: TArray<Integer>;
+  endRange: TIntegerArray;
   resultPoints: TArray<IResultPoint>;
   left, right: Single;
   resultPointCallback: TResultPointCallback;
@@ -472,7 +477,7 @@ var
   resPoint: IResultPoint;
   decodeResult, extensionResult: TReadResult;
   format: TBarcodeFormat;
-  allowedExtensions: TArray<Integer>;
+  allowedExtensions: TIntegerArray;
   valid: Boolean;
   extensionLength: Integer;
   countryID: String;
@@ -541,7 +546,7 @@ begin
 
     if (hints <> nil) and
       (hints.ContainsKey(TDecodeHintType.ALLOWED_EAN_EXTENSIONS)) then
-      allowedExtensions := TArray<Integer>
+      allowedExtensions := TIntegerArray
         (hints[TDecodeHintType.ALLOWED_EAN_EXTENSIONS])
     else
       allowedExtensions := nil;

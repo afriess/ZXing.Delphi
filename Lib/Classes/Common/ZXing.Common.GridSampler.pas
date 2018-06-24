@@ -18,10 +18,14 @@
 
 unit ZXing.Common.GridSampler;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  {$ifndef FPC}System.{$endif}SysUtils,
   ZXing.Common.Bitmatrix,
   ZXing.Common.PerspectiveTransform;
 

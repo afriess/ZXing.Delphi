@@ -19,10 +19,14 @@
 
 unit ZXing.Datamatrix.Internal.Version;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  {$ifndef FPC}System.{$endif}SysUtils,
   ZXing.Common.BitMatrix,
   ZXing.QrCode.Internal.FormatInformation,
   ZXing.Common.Detector.MathUtils;

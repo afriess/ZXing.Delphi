@@ -17,6 +17,10 @@ unit ZXing.GlobalHistogramBinarizer;
   * 2015-3 Adapted for Delphi/Object Pascal FireMonkey XE7 mobile by E.Spelt
 }
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses 
@@ -56,7 +60,7 @@ begin
   LUMINANCE_BITS := 5;
   LUMINANCE_SHIFT := 8 - LUMINANCE_BITS;
   LUMINANCE_BUCKETS := 1 shl LUMINANCE_BITS;
-  EMPTY := TArray<Byte>.Create();
+  EMPTY := TArray<Byte>.Create;
   SetLength(EMPTY, 0);
 end;
 
@@ -64,7 +68,7 @@ constructor TGlobalHistogramBinarizer.Create(source: TLuminanceSource);
 begin
   inherited Create(source);
   luminances := EMPTY;
-  buckets := TArray<Integer>.Create();
+  buckets := TArray<Integer>.Create;
   SetLength(self.buckets, LUMINANCE_BUCKETS);
 end;
 

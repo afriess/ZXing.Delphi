@@ -19,15 +19,23 @@
 
 unit ZXing.Common.BitMatrix;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
   SysUtils,
+  {$ifndef FPC}
 {$IFDEF USE_VCL_BITMAP}
   VCL.Graphics,
 {$ELSE}
   FMX.Graphics,
 {$ENDIF}
+  {$else}
+  Graphics,
+  {$endif}
   Generics.Collections,
   ZXing.Common.BitArray,
   ZXing.BarcodeFormat,

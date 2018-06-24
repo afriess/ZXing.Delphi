@@ -1,7 +1,13 @@
 unit ZXIng.ByteSegments;
+
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 type
+  TByteArray = TArray<byte>;
     /// <summary>
     ///  implements the ByteSegments (which was declared as a TList<TArray<Byte>>
     ///  throughout the code as reference-counted interface object)
@@ -13,31 +19,31 @@ type
         function GetCapacity: integer;
         procedure SetCapacity(const Value: integer);
         property Capacity:integer read GetCapacity write SetCapacity;
-        function Add(const item:TArray<byte>):integer;
+        function Add(const item:TByteArray):integer;
      end;
 
 
 function ByteSegmentsCreate:IByteSegments;
 
 implementation
-uses system.SysUtils,
-     Generics.Collections;
+
+uses
+  {$ifndef FPC}System.{$endif}SysUtils,
+  Generics.Collections;
 
 type
   TByteSegments = class(TInterfacedObject,IByteSegments)
   private
-     FList: TList<TArray<Byte>>;
+     FList: TList<TByteArray>;
      function Count:integer;
      procedure Clear;
-     constructor Create;
      function GetCapacity: integer;
      procedure SetCapacity(const Value: integer);
      function Add(const item:TArray<byte>):integer;
   public
+     constructor Create;
      destructor Destroy; override;
   end;
-
-
 
 
 function ByteSegmentsCreate:IByteSegments;
@@ -66,7 +72,7 @@ end;
 
 constructor TByteSegments.Create;
 begin
-   FList := TList<TArray<Byte>>.Create;
+   FList := TList<TByteArray>.Create;
    inherited Create;
 end;
 

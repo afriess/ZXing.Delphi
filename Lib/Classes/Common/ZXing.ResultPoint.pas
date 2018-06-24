@@ -19,10 +19,14 @@
 
 unit ZXing.ResultPoint;
 
+{$IFDEF FPC}
+  {$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  {$ifndef FPC}System.{$endif}SysUtils,
   ZXing.Common.Detector.MathUtils;
 
 type
@@ -58,12 +62,11 @@ type
   /// in place of the actual class constructor
   /// </summary>
   TResultPointHelpers = class
-    protected
-       /// <summary>
-       /// Returns the z component of the cross product between vectors BC and BA.
-       /// </summary>
-       class function crossProductZ(const pointA, pointB, pointC: IResultPoint): Single; static;
     public
+      /// <summary>
+      /// Returns the z component of the cross product between vectors BC and BA.
+      /// </summary>
+      class function crossProductZ(const pointA, pointB, pointC: IResultPoint): Single; static;
        /// <summary>
        /// Initializes a new instance of <see cref="TResultPoint"/> and returns
        /// its <see cref="IResultPoint"/> interface
