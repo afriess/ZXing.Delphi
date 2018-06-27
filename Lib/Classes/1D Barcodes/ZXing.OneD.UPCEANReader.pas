@@ -30,6 +30,7 @@ uses
   {$ifndef FPC}System.{$endif}SysUtils,
   {$ifndef FPC}System.{$endif}Generics.Collections,
   Math,
+  ZXing.Helpers,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
   ZXing.OneD.UPCEANExtensionSupport,
@@ -403,7 +404,7 @@ begin
         Inc(patternStart, (counters[0] + counters[1]));
         curCounter := TIntegerArray.Create;
         SetLength(curCounter, Length(counters));
-        //TArray.Copy<Integer>(counters, curCounter, 2, 0, (patternLength - 2)); ALF
+        TArray.Copy(counters, curCounter, 2, 0, (patternLength - 2));
         { curCounter[patternLength - 2] := 0;
           curCounter[patternLength - 1] := 0; }
         counters := curCounter;

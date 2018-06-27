@@ -21,6 +21,7 @@ unit ZXing.Common.BitMatrix;
 
 {$IFDEF FPC}
   {$mode delphi}{$H+}
+  {$define USE_VCL_BITMAP}
 {$ENDIF}
 
 interface

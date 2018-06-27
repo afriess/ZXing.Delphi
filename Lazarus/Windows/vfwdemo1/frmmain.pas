@@ -23,7 +23,10 @@ uses
   {$endif}
   {$ifdef MSWindows}Windows, VFW,{$endif}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, ExtCtrls, Clipbrd, Buttons, Spin, fpimage;
+  StdCtrls, ExtCtrls, Clipbrd, Buttons, Spin, fpimage,
+  ZXing.ReadResult,
+  ZXing.BarCodeFormat,
+  ZXing.ScanManager;
 
 type
 
@@ -34,30 +37,27 @@ type
     bFormat: TButton;
     bReconnect: TButton;
     bQuality: TButton;
-    bRecord: TButton;
-    BMotion: TButton;
-    Label1: TLabel;
-    Trigger: TLabel;
-    SETreshold: TFloatSpinEdit;
-    SETrigger: TFloatSpinEdit;
+    Memo1: TMemo;
+    Scan: TButton;
+    TScan: TTimer;
     pControl: TPanel;
     pCapture: TPanel;
     stCapture: TStaticText;
-    TMotion: TTimer;
-    procedure BMotionClick(Sender: TObject);
-    procedure TMotionTimer(Sender: TObject);
+    procedure ScanClick(Sender: TObject);
+    procedure TScanTimer(Sender: TObject);
     procedure VideoCreate(Sender: TObject);
     procedure VideoDestroy(Sender: TObject);
     procedure bConnectClick(Sender: TObject);
     procedure bFormatClick(Sender: TObject);
     procedure bQualityClick(Sender: TObject);
-    procedure bRecordClick(Sender: TObject);
     procedure bSourceClick(Sender: TObject);
     procedure pCaptureResize(Sender: TObject);
   private
-    function CheckDifferent: boolean;
     procedure SaveTempFrame;
   public
+    FScanManager : TScanManager;
+    FScanInProgress : boolean;
+    FFrameTake : byte;
     FLastSend : TDateTime;
     FLastImage : Array of Word;
     FTicks : Integer;
@@ -74,8 +74,6 @@ type
     procedure CapConnect;             // Connect/Reconnect window + driver
     procedure CapEnableViewer;        // Start Live MainForm (Preview or Overlay)
     procedure CapDisableViewer;       // Stop Live MainForm
-    procedure CapRecord;              // Start recording
-    procedure CapStop;                // Stop recording
     procedure CapDisconnect;          // Disconnect driver
     procedure CapDestroy;             // Destroy capture window
     function CapCreated : Boolean;
@@ -89,10 +87,61 @@ implementation
 {$R *.lfm}
 
 uses
-  ZXing.ReadResult,
-  ZXing.BarCodeFormat,
-  ZXing.ScanManager,
+  FPWriteBMP,
   dateutils;
+
+(*
+procedure MyBitmapLoadFromStream( bmp: Graphics.Tbitmap; stream: Tmemorystream );
+var
+  ScanlineBytes: integer;
+begin
+  stream.Seek(0, soFromBeginning);
+  ScanlineBytes:=ABS( Integer( Bmp.Scanline[ 1 ] )-Integer( Bmp.Scanline[ 0 ] ) )*bmp.Height;
+  stream.Read( bmp.Scanline[ bmp.Height - 1 ]^, ScanlineBytes );
+end;
+
+function VideoCap1FrameCallback(hWnd: HWND; lpVHdr: PVIDEOHDR): DWORD; stdcall;
+var
+  bmp: Tbitmap;
+  stream : Tmemorystream;
+  ReadResult: TReadResult;
+begin
+  bmp := Tbitmap.create;
+  bmp.PixelFormat := pf24bit;
+  bmp.width  := 640;
+  bmp.height := 480;
+  stream := Tmemorystream.create;
+  try
+    Stream.WriteBuffer(lpVhdr^.lpData^, lpVhdr^.dwBytesUsed );
+    Stream.Position:=0;
+    bmp.LoadFromStream(Stream);
+    //MyBitmapLoadFromStream( bmp, stream );
+
+    ReadResult := nil;
+    try
+      try
+        ReadResult := MainForm.FScanManager.Scan(bmp);
+      except
+        on E: Exception do
+        begin
+          exit;
+        end;
+      end;
+
+      if (ReadResult <> nil) then
+      begin
+        MainForm.Memo1.Lines.Append(ReadResult.Text);
+      end;
+    finally
+      ReadResult.Free;
+    end;
+
+  finally
+   bmp.free;
+   stream.free;
+  end;
+end;
+*)
 
 procedure TMainForm.CapCreate;
 begin
@@ -151,7 +200,7 @@ begin
     M:=Format('Video Capture - Preview (%s)',[M])
   else
     M:='ERROR configuring capture driver.';
-  stCapture.Caption :=M
+  stCapture.Caption:=M;
 end;
 
 procedure TMainForm.CapDisableViewer;
@@ -164,31 +213,6 @@ begin
       capPreview(FCapHandle, False);
     FLiveVideo := False;
     end;
-end;
-
-procedure TMainForm.CapRecord;
-begin
-  CapStop;
-  CapDisableViewer;
-  FFileName:=ExtractFilePath(Application.ExeName) + FormatDateTime('"Clip "[dd mm yyyy hh mm ss]".avi"', Now);
-  stCapture.Caption:='Recording '+FFileName;
-  bRecord.Caption := 'S&top';
-  capFileSetCaptureFile(FCapHandle, PChar(FFileName));
-  capCaptureSequence(FCapHandle);
-  capFileSaveAs(FCapHandle, PChar(FFileName));
-  FRecording := True;
-end;
-
-procedure TMainForm.CapStop;
-begin
-  if Not FRecording then
-    Exit;
-  FRecording := False;
-  capCaptureStop(FCapHandle);
-  RenameFile(FFileName, ChangeFileExt(FFileName, FormatDateTime(' - [dd mm yyyy hh mm ss]".avi"', Now)));
-  CapEnableViewer;
-  stCapture.Caption := 'Recording stopped';
-  bRecord.Caption := '&Record';
 end;
 
 procedure TMainForm.CapDisconnect;
@@ -217,8 +241,10 @@ end;
 { TMainForm }
 
 procedure TMainForm.VideoCreate(Sender: TObject);
-
 begin
+  FScanManager:=TScanManager.Create(TBarcodeFormat.Auto, nil);
+  FScanInProgress:=false;
+  FFrameTake:=0;
   FLastSend:=0;
   FFrameFile:=ChangeFileExt(ParamStr(0),'.bmp');
   FBWFrameFile:=ChangeFileExt(ParamStr(0),'-bw.bmp');
@@ -237,79 +263,81 @@ begin
   capFileSaveDIB(FCapHandle,PChar(FFrameFile));
 end;
 
-function TMainForm.CheckDifferent : boolean;
-
-Const
-  MaxColor = Cardinal($FFFF);
-
-Var
-  A : Array of Word;
-  R,C,I,PD,DC,TH,TC : Integer;
-  D,MD: Int64;
-  G : Word;
-  P : TFPColor;
-
+procedure TMainForm.TScanTimer(Sender: TObject);
+var
+  scanBitmap: TBitmap;
+  ReadResult: TReadResult;
+  myBmpStream : TMemoryStream;
+  myBmpWriter : TFPWriterBMP;
 begin
-  FTempBMP.LoadFromFile(FFrameFile);
-  TC:=FTempBMP.Height*FTempBMP.Width;
-  TH:=Round(MaxColor/100*SETreshold.Value);
-  MD:=TC*MaxColor;
-  Result:=Length(FLastImage)<>0;
-  SetLength(A,TC);
-  I:=0;
-  D:=0;
-  dc:=0;
-  For R:=0 to FTempBMP.Height-1 do
-    For C:=0 to FTempBMP.Width-1 do
-      begin
-      P:=FTempBMP.Colors[C,R];
-      G:=(P.blue+P.red+P.Green) div 3;
-      P.Blue:=G;
-      P.Red:=G;
-      P.Green:=G;
-      FTempBMP.Colors[C,R]:=P;
-      A[i]:=G;
-      if (I<Length(FLastImage)) then
-        begin
-        PD:=Abs(G-FLastImage[i]);
-        If (PD>TH) then
-          begin
-          inc(DC);
-          D:=D+Abs(PD);
-          end;
-        end;
-      Inc(i);
-      end;
-  FLastImage:=A;
-  STCapture.Caption:=Format('Try %d - Color:  %d (%f %%) Pixels: %d/%d (%f %%)',
-                            [FTicks, D, D/MD*100, DC, TC, DC/TC*100]);
-  if Result then
-    begin
-    Result:=(D/MD*100)>SETrigger.Value;
-    if Result then
-      FTempBMP.SaveToFile(FBWFrameFile);
-    end;
-end;
+  if (FScanInProgress) then exit;
 
-
-procedure TMainForm.TMotionTimer(Sender: TObject);
-
-begin
   Inc(FTicks);
+
+  //capSetCallbackOnFrame(FCapHandle,@VideoCap1FrameCallback);
+
+  scanBitmap := TBitmap.Create;
+  {
+  capGrabFrameNoStop(FCapHandle);
+  capEditCopy(FCapHandle);
+  if Clipboard.HasFormat(CF_Bitmap) then
+  begin
+    scanBitmap.LoadFromClipboardFormat(CF_Bitmap);
+  end;
+  EmptyClipboard;
+
+  if Clipboard.FindPictureFormatID = Windows.CF_BITMAP then
+  begin
+    OpenClipboard(FCapHandle); // Handle is my form's handle
+    scanBitmap.Handle := HBITMAP(GetClipboardData(Windows.CF_BITMAP));
+    CloseClipboard;
+  end;
+  }
+
   SaveTempFrame;
-  if CheckDifferent then
-    begin
-    If MinutesBetween(Now,FLastSend)>1 then
+  FTempBMP.LoadFromFile(FFrameFile);
+
+  myBmpStream := TMemoryStream.Create;
+  myBmpWriter := TFPWriterBMP.Create;
+
+  FTempBMP.SaveToStream(myBmpStream, myBmpWriter);
+  myBmpStream.Position := 0;
+  scanBitmap.LoadFromStream(myBmpStream, myBmpStream.Size);
+
+  STCapture.Caption:=Format('Try %d - Scan:  w %d h %d',
+                            [FTicks, scanBitmap.Width, scanBitmap.Height]);
+
+  ReadResult := nil;
+
+  try
+    FScanInProgress := True;
+    try
+      ReadResult := FScanManager.Scan(scanBitmap);
+    except
+      on E: Exception do
       begin
-      FLastSend:=Now;
+        exit;
       end;
     end;
+
+    if (ReadResult <> nil) then
+    begin
+      Memo1.Lines.Append(ReadResult.Text);
+    end;
+
+  finally
+    ReadResult.Free;
+    scanBitmap.Free;
+    //myBmpStream.Free;
+    //myBmpWriter.Free;
+    FScanInProgress := false;
+  end;
+
 end;
 
-procedure TMainForm.BMotionClick(Sender: TObject);
-
+procedure TMainForm.ScanClick(Sender: TObject);
 begin
-  With TMotion do
+  With TScan do
     Enabled:=Not Enabled;
 end;
 
@@ -318,6 +346,7 @@ begin
   CapDisableViewer;
   CapDisconnect;
   CapDestroy;
+  FScanManager.Free;
 end;
 
 procedure TMainForm.bConnectClick(Sender: TObject);
@@ -334,14 +363,6 @@ end;
 procedure TMainForm.bQualityClick(Sender: TObject);
 begin
   capDlgVideoCompression(FCapHandle);
-end;
-
-procedure TMainForm.bRecordClick(Sender: TObject);
-begin
-  if FRecording then
-    CapStop
-  else
-    CapRecord;
 end;
 
 procedure TMainForm.bSourceClick(Sender: TObject);

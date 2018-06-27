@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 277
+  Left = 379
   Height = 494
-  Top = 153
+  Top = 143
   Width = 559
   HorzScrollBar.Page = 470
   VertScrollBar.Page = 347
@@ -15,8 +15,8 @@ object MainForm: TMainForm
   LCLVersion = '1.9.0.0'
   object pCapture: TPanel
     Left = 0
-    Height = 397
-    Top = 80
+    Height = 373
+    Top = 104
     Width = 559
     Align = alClient
     BevelOuter = bvLowered
@@ -35,18 +35,18 @@ object MainForm: TMainForm
   end
   object pControl: TPanel
     Left = 0
-    Height = 80
+    Height = 104
     Top = 0
     Width = 559
     Align = alTop
     BevelInner = bvLowered
-    ClientHeight = 80
+    ClientHeight = 104
     ClientWidth = 559
     FullRepaint = False
     TabOrder = 1
     object bSource: TButton
       Left = 8
-      Height = 57
+      Height = 41
       Hint = 'Change video source and adjust settings'
       Top = 8
       Width = 53
@@ -58,7 +58,7 @@ object MainForm: TMainForm
     end
     object bFormat: TButton
       Left = 72
-      Height = 57
+      Height = 41
       Hint = 'Slelect the image format for frames'
       Top = 8
       Width = 53
@@ -69,10 +69,10 @@ object MainForm: TMainForm
       TabOrder = 1
     end
     object bReconnect: TButton
-      Left = 184
-      Height = 57
+      Left = 8
+      Height = 41
       Hint = 'Update the driver information after changing the source'
-      Top = 8
+      Top = 55
       Width = 53
       Caption = '&Connect'
       OnClick = bConnectClick
@@ -81,71 +81,40 @@ object MainForm: TMainForm
       TabOrder = 2
     end
     object bQuality: TButton
-      Left = 128
-      Height = 57
+      Left = 72
+      Height = 41
       Hint = 'Configure compression for recording'
-      Top = 8
+      Top = 55
       Width = 53
       Caption = '&Quality'
       OnClick = bQualityClick
       TabOrder = 3
     end
-    object bRecord: TButton
-      Left = 240
-      Height = 57
-      Hint = 'Start/Stop recording'
+    object Scan: TButton
+      Left = 144
+      Height = 88
       Top = 8
-      Width = 53
-      Caption = '&Record'
-      OnClick = bRecordClick
+      Width = 56
+      Caption = 'Scan'
+      OnClick = ScanClick
       TabOrder = 4
     end
-    object BMotion: TButton
-      Left = 296
-      Height = 57
+    object Memo1: TMemo
+      Left = 219
+      Height = 88
       Top = 8
-      Width = 53
-      Caption = 'Motion'
-      OnClick = BMotionClick
+      Width = 327
+      Lines.Strings = (
+        'Memo1'
+      )
       TabOrder = 5
     end
-    object SETreshold: TFloatSpinEdit
-      Left = 416
-      Height = 23
-      Top = 8
-      Width = 72
-      TabOrder = 6
-      Value = 5
-    end
-    object SETrigger: TFloatSpinEdit
-      Left = 416
-      Height = 23
-      Top = 40
-      Width = 72
-      TabOrder = 7
-      Value = 10
-    end
-    object Label1: TLabel
-      Left = 363
-      Height = 15
-      Top = 14
-      Width = 45
-      Caption = 'Treshold'
-      ParentColor = False
-    end
-    object Trigger: TLabel
-      Left = 368
-      Height = 15
-      Top = 47
-      Width = 37
-      Caption = 'Trigger'
-      ParentColor = False
-    end
   end
-  object TMotion: TTimer
+  object TScan: TTimer
     Enabled = False
-    OnTimer = TMotionTimer
-    Left = 60
-    Top = 40
+    Interval = 500
+    OnTimer = TScanTimer
+    Left = 115
+    Top = 66
   end
 end

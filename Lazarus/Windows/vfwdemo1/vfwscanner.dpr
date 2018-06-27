@@ -1,4 +1,4 @@
-program motiondetection;
+program vfwscanner;
 
 {$IFDEF FPC}
   {$mode objfpc}{$H+}

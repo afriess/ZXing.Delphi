@@ -2,6 +2,7 @@ unit ZXing.ScanManager;
 
 {$IFDEF FPC}
   {$mode delphi}{$H+}
+  {$define USE_VCL_BITMAP}
 {$ENDIF}
 
 interface
@@ -152,6 +153,7 @@ var
   LuminanceSource, InvLuminanceSource: TLuminanceSource;
   HybridBinarizer: THybridBinarizer;
   BinaryBitmap: TBinaryBitmap;
+  x,y:integer;
 begin
   InvLuminanceSource := nil;
   LuminanceSource := nil;

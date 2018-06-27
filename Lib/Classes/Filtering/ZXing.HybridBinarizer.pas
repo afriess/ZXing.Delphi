@@ -54,7 +54,8 @@ uses
 /// </author>
 
 type
-  TArrayIntOfInt = TArray<TArray<Integer>>;
+  TIntegerArray = TArray<Integer>;
+  TArrayIntOfInt = TArray<TIntegerArray>;
 
   THybridBinarizer = class(TGlobalHistogramBinarizer)
   private

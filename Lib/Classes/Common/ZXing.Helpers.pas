@@ -31,6 +31,7 @@ type
     class function Clone(original: TArray<Integer>): TArray<Integer>; static;
     class function CopyInSameArray(const Input: TArray<Integer>;
       StartIndex: Integer; Len: Integer): TArray<Integer>; static;
+    class procedure Copy(const Source: TArray<Integer>; var Target: TArray<Integer>; SI, DI, Cnt: integer); static;
   end;
 
 implementation
@@ -64,6 +65,16 @@ begin
     inc(y);
   end;
 
+end;
+
+class procedure TArray.Copy(const Source: TArray<Integer>; var Target: TArray<Integer>; SI, DI, Cnt: integer);
+var
+  i:integer;
+begin
+  for i := 0 to Cnt - 1 do
+  begin
+    Target[SI+i]:=Source[DI+i];
+  end;
 end;
 
 end.

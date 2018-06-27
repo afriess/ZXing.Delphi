@@ -10,7 +10,7 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="motiondetection"/>
+      <Title Value="vfwscanner"/>
       <Icon Value="0"/>
     </General>
     <VersionInfo>
@@ -47,7 +47,7 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="motiondetection.dpr"/>
+        <Filename Value="vfwscanner.dpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>

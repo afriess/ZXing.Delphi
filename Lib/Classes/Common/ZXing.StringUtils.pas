@@ -55,7 +55,7 @@ begin
   GB2312 := 'GB2312';
 
   (*
-  ALF
+  //ALF
   ASSUME_SHIFT_JIS := (string.Compare(TStringUtils.SHIFT_JIS,
     TStringUtils.PLATFORM_DEFAULT_ENCODING, true) = 0) or
     (string.Compare('EUC-JP', TStringUtils.PLATFORM_DEFAULT_ENCODING,

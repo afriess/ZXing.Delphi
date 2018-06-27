@@ -21,6 +21,7 @@ unit ZXing.BaseLuminanceSource;
 
 {$IFDEF FPC}
   {$mode delphi}{$H+}
+  {$define USE_VCL_BITMAP}
 {$ENDIF}
 
 interface
@@ -96,9 +97,15 @@ end;
 /// <param name="height">The height.</param>
 constructor TBaseLuminanceSource.Create(const luminanceArray: TArray<Byte>; 
   const width, height: Integer);
+var
+  i:integer;
 begin
   Self.Create(width, height);
-  {$ifndef FPC}Copy(luminanceArray, 0, Length(luminances));{$endif}
+  {$ifdef FPC}
+  for i:=0 to Length(luminances)-1 do luminanceArray[i]:=0;
+  {$else}
+  Copy(luminanceArray, 0, Length(luminances));
+  {$endif}
 end;
 
 /// <summary>
