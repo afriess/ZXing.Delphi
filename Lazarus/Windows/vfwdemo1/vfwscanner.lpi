@@ -66,11 +66,14 @@
       <Filename Value="binscompiled\$NameOnly($(ProjFile))-$(TargetCPU)-$(TargetOS)"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="..\..\..\Lib;..\..\..\Lib\Classes;..\..\..\Lib\Classes\Common;..\..\..\Lib\Classes\Common\Detector;..\..\..\Lib\Classes\Filtering;..\..\..\Lib\Classes\1D Barcodes;..\..\..\Lib\Classes\2D Barcodes;..\..\..\Lib\Classes\2D Barcodes\Decoder;..\..\..\Lib\Classes\2D Barcodes\Detector;..\..\..\Lib\Classes\Common\ReedSolomon"/>
+      <OtherUnitFiles Value="..\..\..\Lib;..\..\..\Lib\Classes;..\..\..\Lib\Classes\Common;..\..\..\Lib\Classes\Common\Detector;..\..\..\Lib\Classes\Filtering;..\..\..\Lib\Classes\1D Barcodes;..\..\..\Lib\Classes\2D Barcodes;..\..\..\Lib\Classes\2D Barcodes\Decoder;..\..\..\Lib\Classes\2D Barcodes\Detector;..\..\..\Lib\Classes\Common\ReedSolomon;graphics32\Source"/>
       <UnitOutputDirectory Value="libscompiled\$(TargetCPU)-$(TargetOS)"/>
       <SrcPath Value="$(LazarusDir)\lcl;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="False"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

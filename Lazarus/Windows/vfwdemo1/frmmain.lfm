@@ -107,14 +107,8 @@ object MainForm: TMainForm
       Lines.Strings = (
         'Memo1'
       )
+      ScrollBars = ssBoth
       TabOrder = 5
     end
-  end
-  object TScan: TTimer
-    Enabled = False
-    Interval = 500
-    OnTimer = TScanTimer
-    Left = 115
-    Top = 66
   end
 end
