@@ -2,9 +2,6 @@ unit videodev2;
 
 interface
 
-uses
-  unixtype;
-
 {
   Most part of this file was converted by H2Pas 1.0.0 using 'h2pas -e -p videodev2.h'
   Some defines in videodev2.h which could not be implemented without functions was commented out.
@@ -80,6 +77,22 @@ uses
     }
 {$ifndef _UAPI__LINUX_VIDEODEV2_H}
 {$define _UAPI__LINUX_VIDEODEV2_H}  
+{//#ifndef __KERNEL__}
+{//#include <sys/time.h>}
+type
+  timeval = record
+    tv_sec : longint;
+    tv_usec : longint;
+  end;
+
+  timespec = record
+    tv_sec: Longint;
+    tv_nsec: Longint;
+  end;
+{//#endif}
+{//#include <linux/compiler.h>}
+
+{//#include <linux/ioctl.h>}
   const
      _IOC_NRBITS = 8;
      _IOC_TYPEBITS = 8;
@@ -101,14 +114,14 @@ uses
      _IOC_READ = 2;
 {//#include <linux/types.h>}
 type
-  __u8 = cuint8;
-  __s8 = cint8;
-  __u16 = cuint16;
-  __s16 = cint16;
-  __u32 = cuint32;
-  __s32 = cint32;
-  __u64 = cuint64;
-  __s64 = cint64;
+  __u8 = byte;
+  __s8 = shortint;
+  __u16 = word;
+  __s16 = smallint;
+  __u32 = LongWord;
+  __s32 = integer;
+  __u64 = Int64;
+  __s64 = Int64;
 
 type
   __le32 = __u32;
@@ -1865,9 +1878,14 @@ const
         sequence : __u32;
         memory : __u32;
         m : record
-            case dword of
+            case longint of
               0 : ( offset : __u32 );
-              1 : ( userptr : culong );
+              {$ifdef CPU32}
+              1 : ( userptr : dword );
+              {$ENDIF}
+              {$ifdef CPU64}
+              1 : ( userptr : __u64 );
+              {$ENDIF}
               2 : ( planes : Pv4l2_plane );
               3 : ( fd : __s32 );
             end;
