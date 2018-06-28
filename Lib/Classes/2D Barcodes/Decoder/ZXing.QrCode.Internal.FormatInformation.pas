@@ -64,7 +64,7 @@ type
     constructor Create(const formatInfo: Integer);
 
     function Equals(o: TObject): Boolean; override;
-    function GetHashCode: Integer; override;
+    function GetHashCode: PtrInt; override;
     class function numBitsDiffering(a, b: Integer): Integer; static;
 
     /// <summary>
@@ -178,7 +178,7 @@ begin
     (FDataMask = other.DataMask));
 end;
 
-function TFormatInformation.GetHashCode: Integer;
+function TFormatInformation.GetHashCode: PtrInt;
 begin
   Result := ((FErrorCorrectionLevel.ordinal shl 3) or FDataMask)
 end;

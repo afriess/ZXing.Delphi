@@ -1,0 +1,296 @@
+object FormMain: TFormMain
+  Left = 373
+  Height = 577
+  Top = 164
+  Width = 989
+  Caption = 'Rick''s Party Camera'
+  ClientHeight = 577
+  ClientWidth = 989
+  Font.Color = clBlack
+  Font.Height = -12
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poDesktopCenter
+  LCLVersion = '1.9.0.0'
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 554
+    Width = 989
+    Panels = <>
+  end
+  object MemoInfo: TMemo
+    Left = 296
+    Height = 46
+    Top = 504
+    Width = 312
+    Anchors = [akTop, akLeft, akBottom]
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    ParentFont = False
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+  end
+  object LabelError: TLabel
+    Left = 8
+    Height = 45
+    Top = 504
+    Width = 280
+    AutoSize = False
+    Caption = 'Error box'
+    Color = clBlack
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -13
+    Font.Name = 'Arial Narrow'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+    Transparent = False
+    WordWrap = True
+    OnClick = LabelErrorClick
+    OnDblClick = LabelErrorDblClick
+  end
+  object Bevel1: TBevel
+    Left = 8
+    Height = 490
+    Top = 8
+    Width = 650
+  end
+  object PaintBox: TPaintBox
+    Left = 13
+    Height = 480
+    Top = 14
+    Width = 640
+  end
+  object PageControl1: TPageControl
+    Left = 664
+    Height = 542
+    Top = 8
+    Width = 325
+    ActivePage = GlobalSettingsTabSheet
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabIndex = 1
+    TabOrder = 2
+    object PartyTabSheet: TTabSheet
+      Caption = 'Lets Party !!'
+      ClientHeight = 294
+      ClientWidth = 321
+      object Button1: TButton
+        Left = 9
+        Height = 43
+        Top = 248
+        Width = 303
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Caption = 'Make picture'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -37
+        Font.Name = 'Arial'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+      end
+      object Edit1: TEdit
+        Left = 9
+        Height = 31
+        Hint = 'Enter name'
+        Top = 208
+        Width = 303
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -19
+        Font.Name = 'Arial Narrow'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+      end
+      object Label3: TLabel
+        Left = 9
+        Height = 43
+        Top = 160
+        Width = 241
+        Caption = 'Enter Your Name:'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clRed
+        Font.Height = -37
+        Font.Name = 'Arial Narrow'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        ParentColor = False
+        ParentFont = False
+      end
+      object Label4: TLabel
+        Left = 9
+        Height = 152
+        Top = 8
+        Width = 303
+        AutoSize = False
+        Caption = 'Rickie''s party cam'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clGreen
+        Font.Height = -64
+        Font.Name = 'Arial Narrow'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        ParentColor = False
+        ParentFont = False
+        WordWrap = True
+      end
+    end
+    object GlobalSettingsTabSheet: TTabSheet
+      Caption = 'Global Settings'
+      ClientHeight = 514
+      ClientWidth = 317
+      TabVisible = False
+      object Label2: TLabel
+        Left = 8
+        Height = 18
+        Top = 8
+        Width = 151
+        AutoSize = False
+        Caption = 'Raspberry Pi video device:'
+        ParentColor = False
+      end
+      object CheckBoxOpenClose: TCheckBox
+        Left = 8
+        Height = 22
+        Top = 35
+        Width = 143
+        AutoSize = False
+        Caption = 'Open video device'
+        OnChange = CheckBoxOpenCloseChange
+        TabOrder = 0
+      end
+      object CheckBoxCapture: TCheckBox
+        Left = 8
+        Height = 22
+        Top = 63
+        Width = 143
+        AutoSize = False
+        Caption = 'Start Capturing Video'
+        OnChange = CheckBoxCaptureChange
+        TabOrder = 1
+      end
+      object EditDevice: TEdit
+        Left = 160
+        Height = 23
+        Top = 8
+        Width = 152
+        OnEditingDone = EditDeviceEditingDone
+        TabOrder = 2
+        Text = '/dev/video0'
+      end
+      object Label1: TLabel
+        Left = 193
+        Height = 18
+        Top = 39
+        Width = 60
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Buffers:'
+        ParentColor = False
+      end
+      object FrameRate: TLabel
+        Left = 168
+        Height = 18
+        Top = 64
+        Width = 85
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'FrameRate:'
+        ParentColor = False
+      end
+      object EditBufferCount: TEdit
+        Left = 264
+        Height = 23
+        Top = 35
+        Width = 48
+        OnEditingDone = EditBufferCountEditingDone
+        TabOrder = 3
+        Text = '4'
+      end
+      object EditFrameRate: TEdit
+        Left = 264
+        Height = 23
+        Top = 62
+        Width = 48
+        OnEditingDone = EditFrameRateEditingDone
+        TabOrder = 4
+        Text = '5'
+      end
+      object CheckBoxFast: TCheckBox
+        Left = 8
+        Height = 22
+        Top = 96
+        Width = 143
+        AutoSize = False
+        Caption = 'Fast preview Window'
+        TabOrder = 5
+      end
+    end
+    object CameraSettingsTabSheet: TTabSheet
+      Caption = 'Camera Settings'
+      ClientHeight = 294
+      ClientWidth = 321
+      TabVisible = False
+      object PanelControls: TScrollBox
+        Left = 0
+        Height = 259
+        Top = 0
+        Width = 321
+        HorzScrollBar.Page = 1
+        VertScrollBar.Page = 1
+        Align = alTop
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        TabOrder = 0
+      end
+      object ButtonDefaultControls: TButton
+        Left = 1
+        Height = 25
+        Top = 266
+        Width = 75
+        Anchors = [akRight, akBottom]
+        Caption = 'Defaults'
+        OnClick = ButtonDefaultControlsClick
+        TabOrder = 1
+      end
+      object ButtonUpdateControls: TButton
+        Left = 248
+        Height = 25
+        Top = 266
+        Width = 72
+        Anchors = [akLeft, akBottom]
+        Caption = 'Refresh'
+        OnClick = ButtonUpdateControlsClick
+        TabOrder = 2
+      end
+    end
+  end
+  object BytesLabel: TLabel
+    Left = 616
+    Height = 15
+    Top = 504
+    Width = 31
+    Caption = 'Bytes:'
+    ParentColor = False
+  end
+  object BytesNumberLabel: TLabel
+    Left = 616
+    Height = 15
+    Top = 528
+    Width = 6
+    Caption = '0'
+    ParentColor = False
+  end
+end

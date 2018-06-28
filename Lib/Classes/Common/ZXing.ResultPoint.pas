@@ -48,7 +48,7 @@ type
     function GetY: Single;
 
     function Equals(other: TObject): Boolean;
-    function GetHashCode(): Integer;
+    function GetHashCode(): PtrInt;
     function ToString(): String;
 
     property x: Single read GetX write SetX;

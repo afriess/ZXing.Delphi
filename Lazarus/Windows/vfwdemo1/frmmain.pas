@@ -23,7 +23,7 @@ uses
   {$endif}
   {$ifdef MSWindows}Windows, VFW,{$endif}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  StdCtrls, ExtCtrls, Clipbrd, Buttons, Spin, fpimage,
+  StdCtrls, ExtCtrls, Clipbrd, Buttons, fpimage,
   ZXing.ReadResult,
   ZXing.BarCodeFormat,
   ZXing.ScanManager;
@@ -77,7 +77,7 @@ uses
   FPWriteBMP,
   dateutils;
 
-function OnFrame(hCapWnd: HWND; lpVHDR: PVideoHdr): DWord; stdcall;
+function OnFrame(hCapWnd{%H-}: HWND; lpVHDR: PVideoHdr): DWord; stdcall;
 var
   Bitmap: TBitmap;
   Bitmap24: TBitmap;
