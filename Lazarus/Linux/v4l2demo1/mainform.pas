@@ -8,11 +8,11 @@ uses
   VideoCapture, videodev2,
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls,
-  FPReadJPEG,IntfGraphics,FPImage,FPWriteBMP,RGB16writer,
+  FPReadJPEG,IntfGraphics,FPImage,RGB32writer,
   gtk2, gdk2, gdk2x, glib
-  ,ZXing.ReadResult
-  ,ZXing.BarCodeFormat
-  ,ZXing.ScanManager
+  //,ZXing.ReadResult
+  //,ZXing.BarCodeFormat
+  //,ZXing.ScanManager
   ;
 
 type
@@ -77,7 +77,7 @@ type
     aMS        : TMemoryStream;
     aImage     : TFPCompactImgRGB16Bit;
     aImgReader : TFPReaderJpeg;
-    aImgWriter : TFPWriterRGB16;
+    aImgWriter : TFPWriterRGB32;
 
     procedure ControlTrackBarChange(Sender: TObject);
     procedure ControlComboBoxChange(Sender: TObject);
@@ -144,7 +144,7 @@ begin
   aImgReader.Performance:=jpBestSpeed;
   aImgReader.Smoothing:=False;
   //aImgReader.Scale:=jsHalf;
-  aImgWriter := TFPWriterRGB16.Create;
+  aImgWriter := TFPWriterRGB32.Create;
 
   case aImgReader.Scale of
     jsFullSize:ScaleDivisor:=1;
@@ -595,7 +595,7 @@ begin
     begin
       PStart:=BMP.RawImage.Data;
       BMP.BeginUpdate;
-      Move(aMS.Memory^,PStart^,Video.Width*Video.Height*2);
+      Move(aMS.Memory^,PStart^,Video.Width*Video.Height*4);
       BMP.EndUpdate;
       PaintBox.Canvas.Draw(0,0,BMP);
     end;

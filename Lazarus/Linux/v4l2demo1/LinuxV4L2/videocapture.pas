@@ -141,6 +141,7 @@ type
     FWidth: integer;
     FHeight: integer;
     FPixelFormat: integer;
+    FColorSpace: integer;
     FFrameRate: integer;
     FBufferCount: integer;
     procedure SetDevice(ADevice: string);
@@ -165,6 +166,7 @@ type
     procedure OpenDevice;
     procedure CloseDevice;
     procedure SetFormat(AWidth,AHeight:integer;APixelFormat:integer);
+    procedure SetPixFormat(AWidth,AHeight:integer;APixelFormat:integer);
     procedure SetStreamFrameRate(AFrameRate:integer);
     procedure InitBuffers(ABufferCount:integer);
     procedure CloseBuffers;
@@ -485,11 +487,13 @@ begin
   {$ifdef linux}
   if FHandle>=0 then
   begin
+    repeat
     {$ifdef USELIBV4L2}
     Result:=v4l2_ioctl(FHandle,request,data);
     {$else}
     Result:=FpIOCtl(FHandle,request,data);
     {$endif}
+    until not ((-1 = Result) and (ESysEINTR=errno));
   end else raise EVideo4L2Exception.Create('No device handle !!');
   {$endif}
 end;
@@ -523,7 +527,8 @@ begin
 end;
 
 procedure TVideo4L2Device.SetFormat(AWidth,AHeight:integer;APixelFormat:integer);
-var format: v4l2_format;
+var
+  format: v4l2_format;
 begin
   FillChar({%H-}format, SizeOf(format), 0);
   format._type := V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -545,8 +550,34 @@ begin
   FPixelFormat:=format.fmt.pix.pixelformat;
 end;
 
+procedure TVideo4L2Device.SetPixFormat(AWidth,AHeight:integer;APixelFormat:integer);
+var
+  format: v4l2_pix_format;
+begin
+  FillChar({%H-}format, SizeOf(format), 0);
+  if DevIoctl(VIDIOC_G_FMT, @format)<0 then
+  begin
+    raise EVideo4L2Exception.Create('Unable to request available formats');
+  end;
+  format.width := AWidth;
+  format.height := AHeight;
+  format.pixelformat := APixelFormat;
+  //format.field := V4L2_FIELD_NONE;
+  if DevIoctl(VIDIOC_S_FMT, @format)<0 then
+  begin
+    raise EVideo4L2Exception.Create('Unable to set video format '+IntToStr(AWidth)+'x'+IntToStr(AHeight)+' '+TFourCCArray(APixelFormat));
+  end;
+  // Update to actual values
+  FWidth:=format.width;
+  FHeight:=format.height;
+  FPixelFormat:=format.pixelformat;
+  FColorSpace:=format.colorspace;
+end;
+
+
 procedure TVideo4L2Device.SetStreamFrameRate(AFrameRate:integer);
-var streamparm: v4l2_streamparm;
+var
+  streamparm: v4l2_streamparm;
 begin
   FillChar({%H-}streamparm, SizeOf(streamparm), 0);
   streamparm._type := V4L2_BUF_TYPE_VIDEO_CAPTURE;

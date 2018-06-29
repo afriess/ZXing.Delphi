@@ -1419,6 +1419,14 @@ type
         sizeimage : __u32;
         colorspace : __u32;
         priv : __u32;
+        flags : __u32;
+        union : record
+            case longint of
+              0 : ( ycbcr_enc : __u8 );
+              1 : ( hsv_enc : __u8 );
+            end;
+        quantization : __u32;
+        xfer_func : __u32;
       end;
 
 {      Pixel format         FOURCC                          depth  Description  }
@@ -1808,12 +1816,7 @@ const
         m : record
             case longint of
               0 : ( mem_offset : __u32 );
-              {$ifdef CPU32}
-              1 : ( userptr : dword );
-              {$ENDIF}
-              {$ifdef CPU64}
-              1 : ( userptr : __u64 );
-              {$ENDIF}
+              1 : ( userptr : culong );
               2 : ( fd : __s32 );
             end;
         data_offset : __u32;
@@ -2225,7 +2228,10 @@ const
         il_vbackporch : __u32;
         standards : __u32;
         flags : __u32;
-        reserved : array[0..13] of __u32;
+    	picture_aspect : v4l2_fract;
+    	cea861_vic : __u8;
+    	hdmi_vic : __u8;
+        reserved : array[0..45] of __u8;
       end;
 
   { Interlaced or progressive format  }
@@ -2311,7 +2317,8 @@ const
     Pv4l2_enum_dv_timings = ^v4l2_enum_dv_timings;
     v4l2_enum_dv_timings = record
         index : __u32;
-        reserved : array[0..2] of __u32;
+        pad : __u32;
+        reserved : array[0..1] of __u32;
         timings : v4l2_dv_timings;
       end;
 
@@ -2358,7 +2365,8 @@ const
     Pv4l2_dv_timings_cap = ^v4l2_dv_timings_cap;
     v4l2_dv_timings_cap = record
         _type : __u32;
-        reserved : array[0..2] of __u32;
+        pad : __u32;
+        reserved : array[0..1] of __u32;
         u : record
             case longint of
               0 : ( bt : v4l2_bt_timings_cap );
@@ -2485,6 +2493,10 @@ const
               0 : ( value : __s32 );
               1 : ( value64 : __s64 );
               2 : ( _string : Pchar );
+              3 : ( pu8 : pcuint8 );
+              4 : ( pu16 : pcuint16 );
+              5 : ( pu32 : pcuint32 );
+              6 : ( p : pointer );
             end;
       end;
 
@@ -2996,8 +3008,8 @@ const
   {!!! __attribute__ ((packed)) }    Pv4l2_plane_pix_format = ^v4l2_plane_pix_format;
     v4l2_plane_pix_format = packed record
         sizeimage : __u32;
-        bytesperline : __u16;
-        reserved : array[0..6] of __u16;
+        bytesperline : __u32;
+        reserved : array[0..5] of __u16;
       end;
 
   {*
@@ -3019,9 +3031,39 @@ const
         colorspace : __u32;
         plane_fmt : array[0..(VIDEO_MAX_PLANES)-1] of v4l2_plane_pix_format;
         num_planes : __u8;
-        reserved : array[0..10] of __u8;
+        flags : __u8;
+        union : record
+            case longint of
+              0 : ( ycbcr_enc : __u8 );
+              1 : ( hsv_enc : __u8 );
+      end;
+        quantization : __u8;
+        xfer_func : __u8;
+        reserved : array[0..6] of __u8;
       end;
 
+
+    {*
+     * struct v4l2_sdr_format - SDR format definition
+     * @pixelformat:	little endian four character code (fourcc)
+     * @buffersize:		maximum size in bytes required for data
+      }
+
+    Pv4l2_sdr_format = ^v4l2_sdr_format;
+    v4l2_sdr_format = packed record
+    	pixelformat : __u32;
+    	buffersize : __u32;
+        reserved : array[0..23] of __u8;
+    end;
+    {*
+     * struct v4l2_meta_format - metadata format definition
+     * @dataformat:		little endian four character code (fourcc)
+     * @buffersize:		maximum size in bytes required for data
+      }
+    v4l2_meta_format = packed record
+       dataformat : __u32;
+       buffersize : __u32;
+     end;
   {*
    * struct v4l2_format - stream data format
    * @type:	enum v4l2_buf_type; type of the data stream
@@ -3048,6 +3090,8 @@ const
               2 : ( win : v4l2_window );
               3 : ( vbi : v4l2_vbi_format );
               4 : ( sliced : v4l2_sliced_vbi_format );
+              5 : ( sdr : v4l2_sdr_format );
+              6 : ( meta: v4l2_meta_format );
               5 : ( raw_data : array[0..199] of __u8 );
             end;
       end;
