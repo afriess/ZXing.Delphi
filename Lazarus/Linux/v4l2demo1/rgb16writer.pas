@@ -14,10 +14,13 @@ type
   end;
 
   TFPWriterRGB16 = class (TFPCustomImageWriter)
+  private
+    FBpp:byte;
   protected
     procedure InternalWrite (Stream:TStream; Img: TFPCustomImage); override;
   public
     constructor Create; override;
+    property Bpp:byte read FBpp;
   end;
 
 
@@ -25,7 +28,8 @@ implementation
 
 constructor TFPWriterRGB16.create;
 begin
-  inherited create;
+  inherited Create;
+  FBpp:=2;
 end;
 
 procedure TFPWriterRGB16.InternalWrite (Stream:TStream; Img:TFPCustomImage);
@@ -34,7 +38,7 @@ var
   aLine : PByte;
   tmpcol : TColorRGB;
 begin
-  RowSize:=Img.Width*2;
+  RowSize:=Img.Width*FBpp;
   GetMem(aLine,RowSize);
   try
     for Row:=0 to Img.Height-1 do

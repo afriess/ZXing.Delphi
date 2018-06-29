@@ -5,14 +5,13 @@ unit MainForm;
 interface
 
 uses
-  VideoCapture, videodev2,
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls,
   FPReadJPEG,IntfGraphics,FPImage,RGB32writer,
-  gtk2, gdk2, gdk2x, glib
-  //,ZXing.ReadResult
-  //,ZXing.BarCodeFormat
-  //,ZXing.ScanManager
+  VideoCapture, videodev2
+  ,ZXing.ReadResult
+  ,ZXing.BarCodeFormat
+  ,ZXing.ScanManager
   ;
 
 type
@@ -21,30 +20,25 @@ type
 
   TFormMain = class(TForm)
     Bevel1: TBevel;
-    Button1: TButton;
     ButtonDefaultControls: TButton;
     ButtonUpdateControls: TButton;
     CheckBoxCapture: TCheckBox;
-    CheckBoxFast: TCheckBox;
     CheckBoxOpenClose: TCheckBox;
-    Edit1: TEdit;
     EditBufferCount: TEdit;
     EditDevice: TEdit;
     EditFrameRate: TEdit;
     FrameRate: TLabel;
     Label1: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
     BytesLabel: TLabel;
     BytesNumberLabel: TLabel;
     LabelError: TLabel;
+    Memo1: TMemo;
     MemoInfo: TMemo;
     PageControl1: TPageControl;
     PaintBox: TPaintBox;
     PanelControls: TScrollBox;
     StatusBar: TStatusBar;
-    PartyTabSheet: TTabSheet;
     CameraSettingsTabSheet: TTabSheet;
     GlobalSettingsTabSheet: TTabSheet;
 
@@ -63,15 +57,14 @@ type
       Size: integer; Error: boolean);
   private
     { private declarations }
-    Video: TVideo4L2Device;
-    BMP: TBitmap;
-    prevTicks: QWord;
-    UpdatingControls: boolean;
-    TheAdmin: boolean;
-
-    // for fast image showing
-    FWindow, drawingarea: PGtkWidget;
-    FImage: PGdkImage;
+    FScanManager     : TScanManager;
+    Video            : TVideo4L2Device;
+    BMP              : TBitmap;
+    prevTicks        : QWord;
+    UpdatingControls : boolean;
+    TheAdmin         : boolean;
+    FScanInProgress  : boolean;
+    FFrameTake       : word;
 
     // for image capturing
     aMS        : TMemoryStream;
@@ -94,8 +87,6 @@ type
 var
   FormMain: TFormMain;
 
-function CloseVideo(widget: pGtkWidget; event: pGdkEvent; data: gpointer): gint; cdecl;
-
 implementation
 
 {$R *.lfm}
@@ -105,17 +96,14 @@ uses
 
 { TFormMain }
 
-function CloseVideo(widget: pGtkWidget; event: pGdkEvent; data: gpointer): gint; cdecl;
-begin
-  CloseVideo:= 0;
-end;
-
 procedure TFormMain.FormCreate(Sender: TObject);
 var
   ScaleDivisor:word;
 begin
+  FScanManager:=TScanManager.Create(TBarcodeFormat.Auto, nil);
 
   TheAdmin:=False;
+  FScanInProgress:=False;
 
   Video:=TVideo4L2Device.Create(Self);
 
@@ -131,21 +119,19 @@ begin
   Video.BufferCount := 4;
 
   Video.OnFrameSynchronized := @VideoFrameSynchronized;
-  //Video.OnFrame := @VideoFrameSynchronized;
 
   // BMP for on-form preview
   BMP:=TBitmap.Create;
-  BMP.Width:=PaintBox.Width;
-  BMP.Height:=PaintBox.Height;
-  BMP.PixelFormat:=pf16bit;
+  BMP.PixelFormat:=pf24bit;
+  BMP.SetSize(PaintBox.Width,PaintBox.Height);
 
   aMS        := TMemoryStream.Create;
+  aImgWriter := TFPWriterRGB32.Create;
   aImgReader := TFPReaderJpeg.Create;
+
   aImgReader.Performance:=jpBestSpeed;
   aImgReader.Smoothing:=False;
   //aImgReader.Scale:=jsHalf;
-  aImgWriter := TFPWriterRGB32.Create;
-
   case aImgReader.Scale of
     jsFullSize:ScaleDivisor:=1;
     jsHalf:ScaleDivisor:=2;
@@ -169,6 +155,7 @@ begin
   if aImgReader<>nil then aImgReader.Free;
   if aImgWriter<>nil then aImgWriter.Free;
   if BMP<>nil then BMP.Free;
+  FScanManager.Free;
 end;
 
 procedure TFormMain.CheckBoxOpenCloseChange(Sender: TObject);
@@ -193,77 +180,15 @@ end;
 procedure TFormMain.CheckBoxCaptureChange(Sender: TObject);
 var
   flag:boolean;
-  vbox, bclose, frame, topbox: PGtkWidget;
 begin
   if UpdatingControls then exit;
   flag:=CheckBoxCapture.Checked and not Video.Open;
-
-  if CheckBoxCapture.Checked then
-  begin
-    FWindow:= gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW (FWindow), PChar('Preview'));
-    gtk_window_set_resizable(GTK_WINDOW(FWindow), TRUE);
-
-    topbox:= gtk_vbox_new(FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(FWindow), topbox);
-
-    frame:= gtk_frame_new(nil);
-    gtk_box_pack_start(GTK_BOX(topbox), frame, FALSE, TRUE, 0);
-    gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
-
-    drawingarea:= gtk_drawing_area_new();
-    gtk_drawing_area_size(GTK_DRAWING_AREA(drawingarea), Video.Width, Video.Height);
-    gtk_container_add(GTK_CONTAINER(frame), drawingarea);
-
-    vbox:= gtk_hbox_new(FALSE, 5);
-
-    bclose:= gtk_button_new_with_label('Close Preview');
-    gtk_signal_connect(GTK_OBJECT(bclose), 'clicked', GTK_SIGNAL_FUNC(@CloseVideo), nil);
-    gtk_box_pack_start(GTK_BOX(vbox), bclose, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(topbox), vbox, FALSE, TRUE, 0);
-
-    {
-    gtk_widget_show(bclose);
-    gtk_widget_show(vbox);
-    gtk_widget_show(drawingarea);
-    gtk_widget_show(frame);
-    gtk_widget_show(topbox);
-    gtk_widget_show(FWindow);
-    }
-
-    gtk_widget_show_all(FWindow);
-
-    {$ifdef LCLGTK2}
-    //FImage:= gdk_image_new(GDK_IMAGE_NORMAL, gtk_widget_get_visual(FWindow), Video.Width, Video.Height);
-    //FImage:= gdk_image_new(GDK_IMAGE_SHARED, gtk_widget_get_visual(FWindow), Video.Width, Video.Height);
-    FImage:= gdk_image_new(GDK_IMAGE_FASTEST, gtk_widget_get_visual(FWindow), Video.Width, Video.Height);
-    {$endif}
-    {$ifdef LCLGTK}
-    FImage := gdk_image_new(FFImageTypeConsts[FImageType], gtk_widget_get_visual(FWindow),FWidth,FHeight);
-    {$endif}
-  end;
-
   Video.Capture:=CheckBoxCapture.Checked;
   if flag then begin
     ShowPanelControls;
     UpdatePanelControls;
   end;
-
-  if NOT CheckBoxCapture.Checked then
-  begin
-    if FImage<> nil then begin
-       gdk_image_destroy(FImage);
-       FImage:=nil;
-    end;
-    if FWindow<> nil then begin
-       gtk_widget_hide(FWindow);
-       gtk_widget_destroy(FWindow);
-       FWindow:= nil;
-    end;
-  end;
-
   UpdateParams;
-
   if Video.Capture
      then MemoInfo.Lines.Add('Capturing started')
      else MemoInfo.Lines.Add('Capturing stopped');
@@ -530,81 +455,75 @@ procedure TFormMain.VideoFrameSynchronized(Sender: TObject; Buffer: pointer;
   Size: integer; Error: boolean);
 var
   ticks       : QWord;
-  PStart      : PByte;
+  ReadResult  : TReadResult;
 begin
 
-  BytesNumberLabel.Caption:=IntToStr(Size);
+  if (FScanInProgress) then exit;
 
-  if Error
-     then LabelError.Caption:='Frame with recoverable error received';
+  { This code will take every 4 frames. }
+  inc(FFrameTake);
+  if (FFrameTake mod 4 <> 0) then exit;
 
-  if Video.PixelFormat = V4L2_PIX_FMT_YUYV then
-  begin
-    if Size<>(FImage^.width*FImage^.height*2{YUYV}) then begin
-    //if Size<>(PaintBox.Width*PaintBox.Height*2{YUYV}) then begin
-       LabelError.Caption:='Invalid buffer length '+IntToStr(Size);
-    end;
+  FScanInProgress:=True;
 
-    if CheckBoxFast.Checked then
-    begin
-      if (FImage <> nil) AND (drawingarea <> nil) then
-      begin
-        YUYV_to_BGRA16(PLongWord(Buffer), FImage^.mem, Video.Width*Video.Height);
-        {$ifdef LCLGTK2}
-        gdk_draw_image(drawingarea^.window,drawingarea^.style^.white_gc,FImage,0,0,0,0,Video.Width,Video.Height);
-        {$endif}
-        {$ifdef LCLGTK}
-        gdk_draw_image(drawingarea^.window,PGtkStyle(drawingarea^.thestyle)^.white_gc,FImage,0,0,0,0,Video.Width,Video.Height);
-       {$endif}
-      end;
-    end
-    else
+  try
+    BytesNumberLabel.Caption:=IntToStr(Size);
+
+    if Error then LabelError.Caption:='Frame with recoverable error received';
+
+    if Video.PixelFormat = V4L2_PIX_FMT_YUYV then
     begin
       BMP.BeginUpdate;
+      //YUYV_to_BGRA(PLongWord(Buffer), PLongWord(BMP.RawImage.Data), BMP.Width*BMP.Height);
       YUYV_to_BGRA16(PLongWord(Buffer), PWord(BMP.RawImage.Data), BMP.Width*BMP.Height);
       BMP.EndUpdate;
       PaintBox.Canvas.Draw(0,0,BMP);
     end;
-  end;
 
-  if Video.PixelFormat = V4L2_PIX_FMT_MJPEG then
-  begin
-    aMS.Clear;
-    aMS.Position:=0;
-    aMS.WriteBuffer(Buffer^,Size);
-    aMS.Position:=0;
-    aImage.LoadFromStream(aMS,aImgReader);
-    aMS.Clear;
-    aMS.Position:=0;
-    aImage.SaveToStream(aMS,aImgWriter);
-    aMS.Position:=0;
-    if CheckBoxFast.Checked then
+    if Video.PixelFormat = V4L2_PIX_FMT_MJPEG then
     begin
-      if (FImage <> nil) AND (drawingarea <> nil) then
-      begin
-        Move(aMS.Memory^,FImage^.mem^,Video.Width*Video.Height*2);
-        {$ifdef LCLGTK2}
-        gdk_draw_image(drawingarea^.window,drawingarea^.style^.white_gc,FImage,0,0,0,0,Video.Width,Video.Height);
-        {$endif}
-        {$ifdef LCLGTK}
-        gdk_draw_image(drawingarea^.window,PGtkStyle(drawingarea^.thestyle)^.white_gc,FImage,0,0,0,0,Video.Width,Video.Height);
-        {$endif}
-      end;
-    end
-    else
-    begin
-      PStart:=BMP.RawImage.Data;
+      aMS.Clear;
+      aMS.Position:=0;
+      aMS.WriteBuffer(Buffer^,Size);
+      aMS.Position:=0;
+      aImage.LoadFromStream(aMS,aImgReader);
+      aMS.Clear;
+      aMS.Position:=0;
+      aImage.SaveToStream(aMS,aImgWriter);
+      aMS.Position:=0;
       BMP.BeginUpdate;
-      Move(aMS.Memory^,PStart^,Video.Width*Video.Height*4);
+      Move(aMS.Memory^,PByte(BMP.RawImage.Data)^,Video.Width*Video.Height*aImgWriter.Bpp);
       BMP.EndUpdate;
       PaintBox.Canvas.Draw(0,0,BMP);
     end;
-  end;
 
-  ticks:=GetTickCount64;
-  StatusBar.SimpleText:=IntToStr(round(1000.0/(ticks-prevTicks)))+' FPS';
-  StatusBar.Refresh;
-  prevTicks:=ticks;
+    ReadResult := nil;
+    try
+      try
+        ReadResult := FScanManager.Scan(BMP);
+      except
+        on E: Exception do
+        begin
+          Memo1.Lines.Append('Error: '+E.Message);
+          exit;
+        end;
+      end;
+      if (ReadResult <> nil) then
+      begin
+        Memo1.Lines.Append(ReadResult.Text);
+      end;
+    finally
+      ReadResult.Free;
+    end;
+
+    ticks:=GetTickCount64;
+    StatusBar.SimpleText:=IntToStr(round(1000.0/(ticks-prevTicks)))+' FPS';
+    StatusBar.Refresh;
+    prevTicks:=ticks;
+
+  finally
+    FScanInProgress:=False;
+  end;
 
 end;
 

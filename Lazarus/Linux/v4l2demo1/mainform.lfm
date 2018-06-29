@@ -3,7 +3,7 @@ object FormMain: TFormMain
   Height = 577
   Top = 164
   Width = 989
-  Caption = 'Rick''s Party Camera'
+  Caption = 'ZXing barcode scanner'
   ClientHeight = 577
   ClientWidth = 989
   Font.Color = clBlack
@@ -76,78 +76,8 @@ object FormMain: TFormMain
     Width = 325
     ActivePage = GlobalSettingsTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 2
-    object PartyTabSheet: TTabSheet
-      Caption = 'Lets Party !!'
-      ClientHeight = 294
-      ClientWidth = 321
-      object Button1: TButton
-        Left = 9
-        Height = 43
-        Top = 248
-        Width = 303
-        Anchors = [akTop, akLeft, akRight, akBottom]
-        Caption = 'Make picture'
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -37
-        Font.Name = 'Arial'
-        Font.Pitch = fpVariable
-        Font.Quality = fqDraft
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 0
-      end
-      object Edit1: TEdit
-        Left = 9
-        Height = 31
-        Hint = 'Enter name'
-        Top = 208
-        Width = 303
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -19
-        Font.Name = 'Arial Narrow'
-        Font.Pitch = fpVariable
-        Font.Quality = fqDraft
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 1
-      end
-      object Label3: TLabel
-        Left = 9
-        Height = 43
-        Top = 160
-        Width = 241
-        Caption = 'Enter Your Name:'
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clRed
-        Font.Height = -37
-        Font.Name = 'Arial Narrow'
-        Font.Pitch = fpVariable
-        Font.Quality = fqDraft
-        ParentColor = False
-        ParentFont = False
-      end
-      object Label4: TLabel
-        Left = 9
-        Height = 152
-        Top = 8
-        Width = 303
-        AutoSize = False
-        Caption = 'Rickie''s party cam'
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clGreen
-        Font.Height = -64
-        Font.Name = 'Arial Narrow'
-        Font.Pitch = fpVariable
-        Font.Quality = fqDraft
-        ParentColor = False
-        ParentFont = False
-        WordWrap = True
-      end
-    end
     object GlobalSettingsTabSheet: TTabSheet
       Caption = 'Global Settings'
       ClientHeight = 514
@@ -157,9 +87,9 @@ object FormMain: TFormMain
         Left = 8
         Height = 18
         Top = 8
-        Width = 151
+        Width = 143
         AutoSize = False
-        Caption = 'Raspberry Pi video device:'
+        Caption = 'Video device:'
         ParentColor = False
       end
       object CheckBoxOpenClose: TCheckBox
@@ -229,13 +159,13 @@ object FormMain: TFormMain
         TabOrder = 4
         Text = '5'
       end
-      object CheckBoxFast: TCheckBox
+      object Memo1: TMemo
         Left = 8
-        Height = 22
-        Top = 96
-        Width = 143
-        AutoSize = False
-        Caption = 'Fast preview Window'
+        Height = 404
+        Top = 100
+        Width = 304
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ScrollBars = ssBoth
         TabOrder = 5
       end
     end
