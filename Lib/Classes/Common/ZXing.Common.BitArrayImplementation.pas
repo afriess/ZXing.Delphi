@@ -14,7 +14,7 @@ function NewBitArray(const Size: Integer):IBitArray; overload;
 implementation
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.Common.Detector.MathUtils;
 
 type

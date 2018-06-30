@@ -26,7 +26,7 @@ unit ZXing.Datamatrix.Internal.Version;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.Common.BitMatrix,
   ZXing.QrCode.Internal.FormatInformation,
   ZXing.Common.Detector.MathUtils;

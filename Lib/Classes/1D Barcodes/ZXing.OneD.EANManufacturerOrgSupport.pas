@@ -26,9 +26,9 @@ unit ZXing.OneD.EANManufacturerOrgSupport;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Classes,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Classes,
+  Generics.Collections,
   Math,
   ZXing.OneD.UPCEANExtension2Support,
   ZXing.OneD.UPCEANExtension5Support,

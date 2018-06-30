@@ -26,8 +26,8 @@ unit ZXing.Datamatrix.Internal.BitMatrixParser;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   ZXing.DecodeHintType,
   ZXing.Common.BitMatrix,
   ZXing.QrCode.Internal.FormatInformation,
@@ -191,7 +191,7 @@ var
   resultOffset, row, column, numRows, numColumns: Integer;
   corner1Read, corner2Read, corner3Read, corner4Read: Boolean;
 begin
-  Result := TArray<Byte>.Create;
+  Result := TArray<Byte>.Create{$ifndef FPC}(){$endif};
   SetLength(Result, Version.TotalCodewords);
   resultOffset := 0;
 

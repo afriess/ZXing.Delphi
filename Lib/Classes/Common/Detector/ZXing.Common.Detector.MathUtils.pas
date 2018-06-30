@@ -26,7 +26,7 @@ unit ZXing.Common.Detector.MathUtils;
 interface
 
 uses 
-  {$ifndef FPC}System.{$endif}SysUtils;
+  SysUtils;
 
 type
   TMathUtils = class sealed

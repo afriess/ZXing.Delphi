@@ -26,8 +26,8 @@ unit ZXing.Datamatrix.Internal.Decoder;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   ZXing.DecodeHintType,
   ZXing.Common.BitMatrix,
   ZXing.Datamatrix.Internal.BitMatrixParser,
@@ -152,7 +152,7 @@ begin
     begin
       Inc(totalBytes, db.numDataCodewords)
     end;
-    resultBytes := TArray<Byte>.Create;
+    resultBytes := TArray<Byte>.Create{$ifndef FPC}(){$endif};
     SetLength(resultBytes, totalBytes);
 
     // Error-correct and copy data blocks together into a stream of bytes
@@ -202,7 +202,7 @@ var
 begin
   numCodewords := Length(codewordBytes);
   // First read into an array of ints
-  codewordsInts := TArray<Integer>.Create;
+  codewordsInts := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(codewordsInts, numCodewords);
   for i := 0 to Pred(numCodewords) do
   begin

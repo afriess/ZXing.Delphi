@@ -8,8 +8,8 @@ unit ZXing.ScanManager;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   {$ifndef FPC}
 {$IFDEF USE_VCL_BITMAP}
   VCL.Graphics,
@@ -25,7 +25,7 @@ uses
   ZXing.HybridBinarizer,
   ZXing.BinaryBitmap,
   ZXing.MultiFormatReader,
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.ResultPoint,
   ZXing.ReadResult,
   ZXing.DecodeHintType;

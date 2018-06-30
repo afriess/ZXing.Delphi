@@ -27,8 +27,8 @@ unit ZXing.OneD.EAN13Reader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
@@ -36,7 +36,7 @@ uses
   ZXing.ReadResult,
   ZXing.DecodeHintType,
   ZXing.ResultPoint,
-  ZXing.BarcodeFormat;
+  ZXing.BarCodeFormat;
 
 type
   /// <summary>

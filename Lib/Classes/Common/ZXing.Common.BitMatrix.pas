@@ -39,11 +39,14 @@ uses
   {$endif}
   Generics.Collections,
   ZXing.Common.BitArray,
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.Helpers,
   ZXing.Common.Detector.MathUtils;
 
 type
+  {$ifndef FPC}
+  PtrInt = integer;
+  {$endif}
   /// <summary>
   /// <p>Represents a 2D matrix of bits. In function arguments below, and throughout the common
   /// module, x is the column position, and y is the row position. The ordering is always x, y.
@@ -104,7 +107,10 @@ var
   offset, v, bits, shift: Integer;
   uBits: LongWord;
 begin
+  Result:=false;
+  if ((x<0) or (y<0)) then exit;
   offset := y * FrowSize + TMathUtils.Asr(x, 5);
+  if (offset>=length(Fbits)) then exit;
   try
     bits := Fbits[offset];
     uBits := LongWord(bits);

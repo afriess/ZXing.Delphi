@@ -25,8 +25,8 @@ unit ZXing.OneD.UPCEANExtensionSupport;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.OneD.UPCEANExtension2Support,
   ZXing.OneD.UPCEANExtension5Support,

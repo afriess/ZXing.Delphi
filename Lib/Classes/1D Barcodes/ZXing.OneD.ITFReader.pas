@@ -26,15 +26,15 @@ unit ZXing.OneD.ITFReader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray, 
   ZXing.ReadResult,
   ZXing.DecodeHintType,
   ZXing.ResultPoint, 
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.Helpers;
 
 type
@@ -392,7 +392,7 @@ var
   x: Integer;
 begin
   patternLength := Length(pattern);
-  counters := TIntegerArray.Create;
+  counters := TIntegerArray.Create{$ifndef FPC}(){$endif};
   SetLength(counters, patternLength);
   width := row.Size;
   isWhite := false;

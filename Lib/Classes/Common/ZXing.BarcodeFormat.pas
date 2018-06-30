@@ -16,7 +16,7 @@
   * Implemented by E. Spelt for Delphi
 }
 
-unit ZXing.BarcodeFormat;
+unit ZXing.BarCodeFormat;
 
 interface
 

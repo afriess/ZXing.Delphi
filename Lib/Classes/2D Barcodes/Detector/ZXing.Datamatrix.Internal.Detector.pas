@@ -26,9 +26,9 @@ unit ZXing.Datamatrix.Internal.Detector;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
-  {$ifndef FPC}System.{$endif}Generics.Defaults,
+  SysUtils,
+  Generics.Collections,
+  Generics.Defaults,
   Math,
   ZXing.Common.BitMatrix,
   ZXing.DefaultGridSampler,
@@ -71,7 +71,7 @@ type
     TResultPointsAndTransitionsComparator = class sealed
       (TComparer<TResultPointsAndTransitions>)
     public
-      function Compare(constref o1, o2: TResultPointsAndTransitions)
+      function Compare({$ifdef FPC}constref{$else}const{$endif} o1, o2: TResultPointsAndTransitions)
         : Integer; override;
     end;
 
@@ -614,7 +614,7 @@ begin
 end;
 
 function TDataMatrixDetector.TResultPointsAndTransitionsComparator.Compare
-  (constref o1, o2: TResultPointsAndTransitions): Integer;
+  ({$ifdef FPC}constref{$else}const{$endif} o1, o2: TResultPointsAndTransitions): Integer;
 begin
   Result := (o1.Transitions - o2.Transitions);
 end;

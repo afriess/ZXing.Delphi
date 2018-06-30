@@ -25,15 +25,15 @@ unit ZXing.OneD.Code39Reader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
   ZXing.ReadResult,
   ZXing.DecodeHintType,
   ZXing.ResultPoint,
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.Common.Detector.MathUtils;
 
 type
@@ -87,7 +87,7 @@ begin
 
   ASTERISK_ENCODING := TCode39Reader.CHARACTER_ENCODINGS[$27];
 
-  counters := TArray<Integer>.Create;
+  counters := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(counters, 9);
   decodeRowResult := TStringBuilder.Create();
   usingCheckDigit := AUsingCheckDigit;
@@ -256,7 +256,8 @@ begin
 
   until (decodedChar = '*');
 
-  self.decodeRowResult.Remove((self.decodeRowResult.length - 1), 1);
+  counter:=(self.decodeRowResult.length - 1);
+  if counter>0 then self.decodeRowResult.Remove(counter, 1);
 
   lastPatternSize := 0;
 
@@ -288,7 +289,8 @@ begin
       exit
     end;
 
-    self.decodeRowResult.Remove(max, self.decodeRowResult.length);
+    counter:=(self.decodeRowResult.length);
+    if (counter>0) then self.decodeRowResult.Remove(max, counter);
   end;
 
   if (self.decodeRowResult.length = 0) then

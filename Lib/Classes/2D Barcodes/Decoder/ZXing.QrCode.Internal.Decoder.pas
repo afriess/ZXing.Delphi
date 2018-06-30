@@ -26,8 +26,8 @@ unit ZXing.QrCode.Internal.Decoder;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   ZXing.DecodeHintType,
   ZXing.Common.BitMatrix,
   ZXing.QrCode.Internal.BitMatrixParser,
@@ -119,7 +119,7 @@ begin
 
   numCodewords := Length(codewordBytes);
   // First read into an array of ints
-  codewordsInts := TArray<Integer>.Create;
+  codewordsInts := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(codewordsInts, numCodewords);
   for i := 0 to Pred(numCodewords) do
     codewordsInts[i] := (codewordBytes[i] and $FF);
@@ -244,7 +244,7 @@ begin
   for DataBlock in dataBlocks do
     Inc(totalBytes, DataBlock.numDataCodewords);
 
-  resultBytes := TArray<Byte>.Create;
+  resultBytes := TArray<Byte>.Create{$ifndef FPC}(){$endif};
   SetLength(resultBytes, totalBytes);
   try
 

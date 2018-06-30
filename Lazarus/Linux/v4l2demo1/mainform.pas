@@ -32,7 +32,6 @@ type
     Label2: TLabel;
     BytesLabel: TLabel;
     BytesNumberLabel: TLabel;
-    LabelError: TLabel;
     Memo1: TMemo;
     MemoInfo: TMemo;
     PageControl1: TPageControl;
@@ -51,8 +50,6 @@ type
     procedure EditDeviceEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure LabelErrorClick(Sender: TObject);
-    procedure LabelErrorDblClick(Sender: TObject);
     procedure VideoFrameSynchronized(Sender: TObject; Buffer: pointer;
       Size: integer; Error: boolean);
   private
@@ -62,7 +59,6 @@ type
     BMP              : TBitmap;
     prevTicks        : QWord;
     UpdatingControls : boolean;
-    TheAdmin         : boolean;
     FScanInProgress  : boolean;
     FFrameTake       : word;
 
@@ -102,7 +98,6 @@ var
 begin
   FScanManager:=TScanManager.Create(TBarcodeFormat.Auto, nil);
 
-  TheAdmin:=False;
   FScanInProgress:=False;
 
   Video:=TVideo4L2Device.Create(Self);
@@ -433,24 +428,6 @@ begin
   end;
 end;
 
-procedure TFormMain.LabelErrorClick(Sender: TObject);
-begin
-  //LabelError.Caption:='';
-end;
-
-procedure TFormMain.LabelErrorDblClick(Sender: TObject);
-begin
-  TheAdmin:=NOT TheAdmin;
-
-  if NOT TheAdmin then PageControl1.PageIndex:=0;
-
-  GlobalSettingsTabSheet.TabVisible:=TheAdmin;
-  CameraSettingsTabSheet.TabVisible:=TheAdmin;
-
-  if TheAdmin then LabelError.Color:=clRed else LabelError.Color:=clBlack;
-
-end;
-
 procedure TFormMain.VideoFrameSynchronized(Sender: TObject; Buffer: pointer;
   Size: integer; Error: boolean);
 var
@@ -468,8 +445,6 @@ begin
 
   try
     BytesNumberLabel.Caption:=IntToStr(Size);
-
-    if Error then LabelError.Caption:='Frame with recoverable error received';
 
     if Video.PixelFormat = V4L2_PIX_FMT_YUYV then
     begin

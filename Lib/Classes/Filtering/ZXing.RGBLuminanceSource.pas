@@ -28,17 +28,18 @@ unit ZXing.RGBLuminanceSource;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}UITypes,
-  {$ifndef FPC}System.{$endif}TypInfo,
+  SysUtils,
+  UITypes,
+  TypInfo,
   {$ifndef FPC}
-{$IFDEF USE_VCL_BITMAP}
+  {$IFDEF USE_VCL_BITMAP}
   Winapi.Windows,
   VCL.Graphics,
-{$ELSE}
+  {$ELSE}
   FMX.Graphics,
-{$ENDIF}
+  {$ENDIF}
   {$else}
+  LCLType,
   Graphics,
   {$endif}
   ZXing.LuminanceSource,
@@ -177,10 +178,7 @@ end;
 constructor TRGBLuminanceSource.CreateFromBitmap(const sourceBitmap: TBitmap; const width, height: Integer);
 type
   {$ifdef FPC}
-  TRGB = packed record
-      b, g, r: byte;
-  end;
-  TRGBarray = array[0..0] of TRGB;
+  TRGBarray = array[0..0] of TRGBAQuad;
   pRGBarray = ^TRGBarray;
   {$else}
   TRGBTripleArray = ARRAY[Word] of TRGBTriple;
@@ -197,7 +195,6 @@ var
   {$endif}
 begin
   Self.Create(width, height);
-  sourceBitmap.PixelFormat := pf24bit;
 
   {$ifdef FPC}
   for y := 0 to sourceBitmap.Height - 1 do
@@ -206,13 +203,21 @@ begin
     scanLine := pRGBarray(sourceBitmap.ScanLine[y]);
     for x := 0 to sourceBitmap.Width - 1 do
     begin
-      r:=scanLine^[x].r;
-      g:=scanLine^[x].g;
-      b:=scanLine^[x].b;
+      (*
+      // Slow !!!
+      PixelColor:=sourceBitmap.Canvas.Pixels[x,y];
+      r:=GetRValue(PixelColor);
+      g:=GetGValue(PixelColor);
+      b:=GetBValue(PixelColor);
+      *)
+      r:=scanLine^[x].Red;
+      g:=scanLine^[x].Green;
+      b:=scanLine^[x].Blue;
       luminances[offset + x] := TMathUtils.Asr(3482*r + 11721*g + 1181*b, 14);
     end;
   end;
   {$else}
+  sourceBitmap.PixelFormat := pf24bit;
   for y := 0 to sourceBitmap.Height - 1 do
   begin
     offset := y * FWidth;

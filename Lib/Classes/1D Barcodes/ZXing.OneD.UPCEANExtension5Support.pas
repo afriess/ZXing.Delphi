@@ -25,13 +25,13 @@ unit ZXing.OneD.UPCEANExtension5Support;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.Reader,
   ZXing.BinaryBitmap,
   ZXing.ReadResult,
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.DecodeHintType,
   ZXing.ResultMetadataType,
   ZXing.ResultPoint,

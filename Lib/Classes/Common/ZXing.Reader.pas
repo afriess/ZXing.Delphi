@@ -26,8 +26,8 @@ unit ZXing.Reader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   ZXing.BinaryBitmap,
   ZXing.ReadResult,
   ZXing.DecodeHintType;

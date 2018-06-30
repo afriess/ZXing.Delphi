@@ -60,7 +60,7 @@ begin
   LUMINANCE_BITS := 5;
   LUMINANCE_SHIFT := 8 - LUMINANCE_BITS;
   LUMINANCE_BUCKETS := 1 shl LUMINANCE_BITS;
-  EMPTY := TArray<Byte>.Create;
+  EMPTY := TArray<Byte>.Create{$ifndef FPC}(){$endif};
   SetLength(EMPTY, 0);
 end;
 
@@ -68,7 +68,7 @@ constructor TGlobalHistogramBinarizer.Create(source: TLuminanceSource);
 begin
   inherited Create(source);
   luminances := EMPTY;
-  buckets := TArray<Integer>.Create;
+  buckets := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(self.buckets, LUMINANCE_BUCKETS);
 end;
 

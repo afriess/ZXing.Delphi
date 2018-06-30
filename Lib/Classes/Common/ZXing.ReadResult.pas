@@ -25,11 +25,11 @@ unit ZXing.ReadResult;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   Generics.Collections,
   ZXing.ResultPoint,
   ZXing.ResultMetadataType,
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.ByteSegments;
 
 type
@@ -330,7 +330,7 @@ begin
   begin
     if (newPoints <> nil) and (Length(newPoints) > 0) then
     begin
-      allPoints := TArray<IResultPoint>.Create;
+      allPoints := TArray<IResultPoint>.Create{$ifndef FPC}(){$endif};
       SetLength(allPoints, (Length(oldPoints) + Length(newPoints)));
 
       Move(oldPoints[0], newPoints[0], Length(oldPoints));

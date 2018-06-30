@@ -26,7 +26,7 @@ unit ZXing.LuminanceSource;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils;
+  SysUtils;
 
 type
   /// <summary>
@@ -184,7 +184,7 @@ var
   luminance: Integer;
   c: char;
 begin
-  row := TArray<Byte>.Create;
+  row := TArray<Byte>.Create{$ifndef FPC}(){$endif};
   SetLength(row, FWidth);
 
   res := TStringBuilder.Create(height * (width + 1));

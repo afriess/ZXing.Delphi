@@ -27,7 +27,7 @@ unit ZXing.QrCode.Internal.DataBlock;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.QrCode.Internal.Version,
   ZXing.QrCode.Internal.ErrorCorrectionLevel;
 
@@ -118,7 +118,7 @@ begin
     Inc(totalBlocks, ecBlock.Count);
 
   // Now establish DataBlocks of the appropriate size and number of data codewords
-  Result := TArray<TDataBlock>.Create;
+  Result := TArray<TDataBlock>.Create{$ifndef FPC}(){$endif};
   SetLength(result, totalBlocks);
   numResultBlocks := 0;
   for ecBlock in ecBlockArray do
@@ -128,7 +128,7 @@ begin
       numDataCodewords := ecBlock.DataCodewords;
       numBlockCodewords := ecBlocks.ECCodewordsPerBlock + numDataCodewords;
 
-      numBlockCodewordsBytes := TArray<Byte>.Create;
+      numBlockCodewordsBytes := TArray<Byte>.Create{$ifndef FPC}(){$endif};
       SetLength(numBlockCodewordsBytes, numBlockCodewords);
 
       Result[numResultBlocks] := TDataBlock.Create(numBlockCodewordsBytes, numDataCodewords);

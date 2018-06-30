@@ -1,17 +1,15 @@
 object MainForm: TMainForm
-  Left = 379
+  Left = 360
   Height = 494
-  Top = 143
+  Top = 145
   Width = 559
   HorzScrollBar.Page = 470
   VertScrollBar.Page = 347
-  ActiveControl = bSource
-  Caption = 'Simple webcam and motion detection'
+  Caption = 'ZXing based barcode scanner'
   ClientHeight = 494
   ClientWidth = 559
   OnCreate = VideoCreate
   OnDestroy = VideoDestroy
-  Position = poScreenCenter
   LCLVersion = '1.9.0.0'
   object pCapture: TPanel
     Left = 0
@@ -91,19 +89,19 @@ object MainForm: TMainForm
       TabOrder = 3
     end
     object Scan: TButton
-      Left = 144
+      Left = 136
       Height = 88
       Top = 8
-      Width = 56
-      Caption = 'Scan'
+      Width = 96
+      Caption = 'Start scanner'
       OnClick = ScanClick
       TabOrder = 4
     end
     object Memo1: TMemo
-      Left = 219
+      Left = 240
       Height = 88
       Top = 8
-      Width = 327
+      Width = 306
       Lines.Strings = (
         'Memo1'
       )

@@ -26,12 +26,12 @@ unit ZXing.Datamatrix.DataMatrixReader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   ZXing.Common.Detector.MathUtils,
   Math,
   ZXing.Common.BitArray,
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.ReadResult,
   ZXing.Reader,
   ZXing.DecodeHintType,
@@ -90,7 +90,7 @@ constructor TDataMatrixReader.Create;
 begin
   inherited;
   FDecoder := TDataMatrixDecoder.Create;
-  NO_POINTS := TArray<IResultPoint>.Create;
+  NO_POINTS := TArray<IResultPoint>.Create{$ifndef FPC}(){$endif};
 end;
 
 destructor TDataMatrixReader.Destroy;

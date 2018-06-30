@@ -27,7 +27,7 @@ unit ZXing.DefaultGridSampler;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   Math,
   ZXing.Common.BitMatrix,
   ZXing.Common.PerspectiveTransform,
@@ -115,7 +115,7 @@ begin
      exit;
 
   bits := TBitMatrix.Create(dimensionX, dimensionY);
-  points := TArray<Single>.Create;
+  points := TArray<Single>.Create{$ifndef FPC}(){$endif};
   SetLength(points, dimensionX shl 1);
 
   try

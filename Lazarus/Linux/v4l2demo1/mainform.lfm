@@ -1,9 +1,9 @@
 object FormMain: TFormMain
-  Left = 373
+  Left = 181
   Height = 577
-  Top = 164
+  Top = 116
   Width = 989
-  Caption = 'ZXing barcode scanner'
+  Caption = 'ZXing based barcode scanner'
   ClientHeight = 577
   ClientWidth = 989
   Font.Color = clBlack
@@ -16,46 +16,10 @@ object FormMain: TFormMain
   LCLVersion = '1.9.0.0'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 554
+    Height = 25
+    Top = 552
     Width = 989
     Panels = <>
-  end
-  object MemoInfo: TMemo
-    Left = 296
-    Height = 46
-    Top = 504
-    Width = 312
-    Anchors = [akTop, akLeft, akBottom]
-    Font.Color = clBlack
-    Font.Height = -11
-    Font.Pitch = fpVariable
-    Font.Quality = fqDraft
-    ParentFont = False
-    ScrollBars = ssAutoBoth
-    TabOrder = 0
-  end
-  object LabelError: TLabel
-    Left = 8
-    Height = 45
-    Top = 504
-    Width = 280
-    AutoSize = False
-    Caption = 'Error box'
-    Color = clBlack
-    Font.CharSet = ANSI_CHARSET
-    Font.Color = clWhite
-    Font.Height = -13
-    Font.Name = 'Arial Narrow'
-    Font.Pitch = fpVariable
-    Font.Quality = fqDraft
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-    Transparent = False
-    WordWrap = True
-    OnClick = LabelErrorClick
-    OnDblClick = LabelErrorDblClick
   end
   object Bevel1: TBevel
     Left = 8
@@ -77,12 +41,11 @@ object FormMain: TFormMain
     ActivePage = GlobalSettingsTabSheet
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabIndex = 0
-    TabOrder = 2
+    TabOrder = 1
     object GlobalSettingsTabSheet: TTabSheet
       Caption = 'Global Settings'
-      ClientHeight = 514
-      ClientWidth = 317
-      TabVisible = False
+      ClientHeight = 507
+      ClientWidth = 319
       object Label2: TLabel
         Left = 8
         Height = 18
@@ -114,7 +77,7 @@ object FormMain: TFormMain
       end
       object EditDevice: TEdit
         Left = 160
-        Height = 23
+        Height = 27
         Top = 8
         Width = 152
         OnEditingDone = EditDeviceEditingDone
@@ -143,7 +106,7 @@ object FormMain: TFormMain
       end
       object EditBufferCount: TEdit
         Left = 264
-        Height = 23
+        Height = 27
         Top = 35
         Width = 48
         OnEditingDone = EditBufferCountEditingDone
@@ -152,7 +115,7 @@ object FormMain: TFormMain
       end
       object EditFrameRate: TEdit
         Left = 264
-        Height = 23
+        Height = 27
         Top = 62
         Width = 48
         OnEditingDone = EditFrameRateEditingDone
@@ -161,9 +124,9 @@ object FormMain: TFormMain
       end
       object Memo1: TMemo
         Left = 8
-        Height = 404
+        Height = 397
         Top = 100
-        Width = 304
+        Width = 306
         Anchors = [akTop, akLeft, akRight, akBottom]
         ScrollBars = ssBoth
         TabOrder = 5
@@ -171,14 +134,13 @@ object FormMain: TFormMain
     end
     object CameraSettingsTabSheet: TTabSheet
       Caption = 'Camera Settings'
-      ClientHeight = 294
-      ClientWidth = 321
-      TabVisible = False
+      ClientHeight = 507
+      ClientWidth = 319
       object PanelControls: TScrollBox
         Left = 0
-        Height = 259
+        Height = 472
         Top = 0
-        Width = 321
+        Width = 319
         HorzScrollBar.Page = 1
         VertScrollBar.Page = 1
         Align = alTop
@@ -186,9 +148,9 @@ object FormMain: TFormMain
         TabOrder = 0
       end
       object ButtonDefaultControls: TButton
-        Left = 1
+        Left = -1
         Height = 25
-        Top = 266
+        Top = 479
         Width = 75
         Anchors = [akRight, akBottom]
         Caption = 'Defaults'
@@ -198,7 +160,7 @@ object FormMain: TFormMain
       object ButtonUpdateControls: TButton
         Left = 248
         Height = 25
-        Top = 266
+        Top = 479
         Width = 72
         Anchors = [akLeft, akBottom]
         Caption = 'Refresh'
@@ -209,18 +171,29 @@ object FormMain: TFormMain
   end
   object BytesLabel: TLabel
     Left = 616
-    Height = 15
+    Height = 17
     Top = 504
-    Width = 31
+    Width = 34
     Caption = 'Bytes:'
     ParentColor = False
   end
   object BytesNumberLabel: TLabel
     Left = 616
-    Height = 15
+    Height = 17
     Top = 528
-    Width = 6
+    Width = 7
     Caption = '0'
     ParentColor = False
+  end
+  object MemoInfo: TMemo
+    Left = 56
+    Height = 50
+    Top = 496
+    Width = 312
+    Anchors = [akLeft, akRight, akBottom]
+    Lines.Strings = (
+      'Some extra info:'
+    )
+    TabOrder = 2
   end
 end

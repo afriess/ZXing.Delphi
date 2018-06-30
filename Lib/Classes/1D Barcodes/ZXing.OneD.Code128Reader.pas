@@ -26,8 +26,8 @@ unit ZXing.OneD.Code128Reader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.Helpers,
   ZXing.OneD.OneDReader,
@@ -35,7 +35,7 @@ uses
   ZXing.ReadResult,
   ZXing.DecodeHintType,
   ZXing.ResultPoint,
-  ZXing.BarcodeFormat;
+  ZXing.BarCodeFormat;
 
 type
   TIntegerArray=TArray<Integer>;
@@ -147,7 +147,7 @@ begin
   width := row.Size;
   rowOffset := row.getNextSet(0);
   counterPosition := 0;
-  counters := TArray<Integer>.Create;
+  counters := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(counters, 6);
   patternStart := rowOffset;
   isWhite := false;

@@ -26,8 +26,8 @@ unit ZXing.QrCode.Internal.Detector;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.Common.BitMatrix,
   ZXing.ResultPoint,

@@ -42,7 +42,7 @@ var
   l: SmallInt;
 begin
   l := Length(original);
-  Result := TArray<Integer>.Create;
+  Result := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(Result, l);
 
   for i := 0 to l - 1 do

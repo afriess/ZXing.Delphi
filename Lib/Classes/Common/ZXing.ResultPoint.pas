@@ -26,10 +26,13 @@ unit ZXing.ResultPoint;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.Common.Detector.MathUtils;
 
 type
+  {$ifndef FPC}
+  PtrInt = integer;
+  {$endif}
   /// <summary>
   /// To mimic "garbage collection" (or ARC) with old-gen compilers we have to use
   /// interfaces. IResultPoint is the interface that maps TResultPoint which is now

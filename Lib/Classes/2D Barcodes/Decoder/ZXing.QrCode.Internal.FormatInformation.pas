@@ -27,12 +27,15 @@ unit ZXing.QrCode.Internal.FormatInformation;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}Classes,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  Classes,
+  Generics.Collections,
   ZXing.QrCode.Internal.ErrorCorrectionLevel,
   ZXing.Common.Detector.MathUtils;
 
 type
+  {$ifndef FPC}
+  PtrInt = integer;
+  {$endif}
   /// <summary> <p>Encapsulates a QR Code's format information, including the data mask used and
   /// error correction level.</p>
   ///

@@ -27,15 +27,15 @@ unit ZXing.MultiFormatReader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Rtti,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Rtti,
+  Generics.Collections,
   {$ifndef FPC}System.RegularExpressions,{$endif}
   ZXing.ReadResult,
   ZXing.Reader,
   ZXing.DecodeHintType,
   ZXing.BinaryBitmap,
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.ResultPoint,
 
   // 1D Barcodes

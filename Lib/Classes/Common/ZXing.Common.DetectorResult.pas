@@ -27,7 +27,7 @@ unit ZXing.Common.DetectorResult;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.Common.BitMatrix,
   ZXing.ResultPoint;
 

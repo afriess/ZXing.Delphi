@@ -27,17 +27,17 @@ unit ZXing.BaseLuminanceSource;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}UITypes,
+  SysUtils,
+  UITypes,
   {$ifndef FPC}
-{$IFDEF USE_VCL_BITMAP}
+  {$IFDEF USE_VCL_BITMAP}
   VCL.Graphics,
-{$ELSE}
+  {$ELSE}
   FMX.Graphics,
-{$ENDIF}
-{$else}
-Graphics,
-{$endif}
+  {$ENDIF}
+  {$else}
+  Graphics,
+  {$endif}
   ZXing.LuminanceSource,
   ZXing.InvertedLuminanceSource;
 
@@ -85,7 +85,7 @@ constructor TBaseLuminanceSource.Create(const width, height: Integer);
 begin
   inherited Create(width, height);
   
-  luminances := TArray<Byte>.Create;
+  luminances := TArray<Byte>.Create{$ifndef FPC}(){$endif};
   SetLength(luminances, (width * height));
 end;
 
@@ -129,7 +129,7 @@ begin
   if ((row = nil) or (Length(row) < width)) then
   begin
     row := nil;
-    row := TArray<Byte>.Create;
+    row := TArray<Byte>.Create{$ifndef FPC}(){$endif};
     SetLength(row, width);
   end;
 
@@ -160,7 +160,7 @@ var
   yold, ynew,
   xold, xnew : Integer;
 begin
-  rotatedLuminances := TArray<Byte>.Create;
+  rotatedLuminances := TArray<Byte>.Create{$ifndef FPC}(){$endif};
   SetLength(rotatedLuminances, (Width * Height));
 
   newWidth := Height;
@@ -224,7 +224,7 @@ begin
   then
      raise EArgumentException.Create('Crop rectangle does not fit within image data.');
 
-  croppedLuminances := TArray<Byte>.Create;
+  croppedLuminances := TArray<Byte>.Create{$ifndef FPC}(){$endif};
   SetLength(croppedLuminances, (width * height));
   oldLuminances := Self.Matrix;
   oldWidth := Self.Width;

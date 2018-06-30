@@ -24,7 +24,7 @@ unit ZXing.Binarizer;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.LuminanceSource,
   ZXing.Common.BitArray,
   ZXing.Common.BitMatrix;

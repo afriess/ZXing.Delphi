@@ -80,7 +80,6 @@ uses
 function OnFrame(hCapWnd{%H-}: HWND; lpVHDR: PVideoHdr): DWord; stdcall;
 var
   Bitmap: TBitmap;
-  Bitmap24: TBitmap;
   BitmapInfo: TBitmapInfo;
   w, h: Integer;
   src, dest: Pointer;
@@ -98,16 +97,10 @@ begin
     src:=lpVHdr^.lpData;
     dest:=Bitmap.ScanLine[0];
     with bitmapinfo.bmiHeader do CodecToARGB(src, dest, w, h, biBitCount, biCompression);
-    Bitmap24:=TBitmap.Create;
-    Bitmap24.PixelFormat:=pf24bit;
-    Bitmap24.SetSize(w,h);
-    src := dest;
-    dest:=Bitmap24.ScanLine[0];
-    Conv32To24(src, dest, w, h);
     ReadResult := nil;
     try
       try
-        ReadResult := MainForm.FScanManager.Scan(Bitmap24);
+        ReadResult := MainForm.FScanManager.Scan(Bitmap);
       except
         on E: Exception do
         begin
@@ -123,7 +116,6 @@ begin
     end;
   finally
     Bitmap.free;
-    Bitmap24.Free;
   end;
 end;
 

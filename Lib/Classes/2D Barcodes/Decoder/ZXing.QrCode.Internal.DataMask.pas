@@ -27,7 +27,7 @@ unit ZXing.QrCode.Internal.DataMask;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.Common.BitMatrix,
   ZXing.Common.Detector.MathUtils;
 

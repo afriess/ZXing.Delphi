@@ -26,14 +26,14 @@ unit ZXing.QrCode.QRCodeReader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.Common.BitArray,
   ZXing.ReadResult,
   ZXing.Reader,
   ZXing.DecodeHintType,
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.ResultPoint,
   ZXing.BinaryBitmap,
   ZXing.QrCode.Internal.Decoder,
@@ -113,7 +113,7 @@ constructor TQRCodeReader.Create;
 begin
   inherited;
   FDecoder := TQRDecoder.Create;
-  NO_POINTS := TArray<IResultPoint>.Create;
+  NO_POINTS := TArray<IResultPoint>.Create{$ifndef FPC}(){$endif};
 end;
 
 destructor TQRCodeReader.Destroy;

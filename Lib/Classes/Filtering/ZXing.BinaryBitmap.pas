@@ -25,7 +25,7 @@ unit ZXing.BinaryBitmap;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.Binarizer,
   ZXing.LuminanceSource,
   ZXing.Common.BitArray,

@@ -26,8 +26,8 @@ unit ZXing.OneD.OneDReader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.Reader,
   ZXing.BinaryBitmap,

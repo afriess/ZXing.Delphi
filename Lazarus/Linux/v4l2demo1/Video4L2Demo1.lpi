@@ -66,15 +66,8 @@
     <CodeGeneration>
       <TargetCPU Value="x86_64"/>
       <TargetOS Value="linux"/>
-      <Optimizations>
-        <OptimizationLevel Value="2"/>
-      </Optimizations>
     </CodeGeneration>
     <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="False"/>
-        <StripSymbols Value="True"/>
-      </Debugging>
       <Options>
         <PassLinkerOptions Value="True"/>
         <LinkerOptions Value="--warn-unresolved-symbols"/>

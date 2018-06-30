@@ -26,7 +26,7 @@ unit ZXing.QrCode.Internal.ErrorCorrectionLevel;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils;
+  SysUtils;
 
 type
   /// <summary>

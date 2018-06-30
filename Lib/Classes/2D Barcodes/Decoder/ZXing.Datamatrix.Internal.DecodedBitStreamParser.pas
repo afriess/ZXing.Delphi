@@ -26,8 +26,8 @@ unit ZXing.Datamatrix.Internal.DecodedBitStreamParser;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   ZXing.DecoderResult,
   ZXing.ByteSegments,
   ZXing.BitSource;
@@ -91,7 +91,7 @@ begin
 
   try
 
-    byteSegments.Add(TArray<Byte>.Create); // TODO (KG): Validation
+    byteSegments.Add(TArray<Byte>.Create{$ifndef FPC}(){$endif}); // TODO (KG): Validation
     mode := TMode.ASCII_ENCODE;
     while ((mode <> TMode.PAD_ENCODE) and (bits.available() > 0)) do
     begin
@@ -464,7 +464,7 @@ begin
     exit;
   end;
 
-  bytes := TArray<Byte>.Create;
+  bytes := TArray<Byte>.Create{$ifndef FPC}(){$endif};
   SetLength(bytes, Count);
 
   for i := 0 to Pred(Count) do

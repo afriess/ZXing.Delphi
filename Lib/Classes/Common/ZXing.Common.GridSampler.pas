@@ -25,7 +25,7 @@ unit ZXing.Common.GridSampler;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.Common.Bitmatrix,
   ZXing.Common.PerspectiveTransform;
 

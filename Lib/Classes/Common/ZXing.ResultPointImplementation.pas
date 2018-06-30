@@ -7,8 +7,8 @@ unit ZXing.ResultPointImplementation;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-     ZXing.ResultPoint;
+  SysUtils,
+  ZXing.ResultPoint;
 
 type
   /// <summary>

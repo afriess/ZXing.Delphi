@@ -26,7 +26,7 @@ unit ZXing.Common.ReedSolomon.ReedSolomonDecoder;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   // Hint: ZXing.Common.ReedSolomon.GenericGFPoly is implemented in GenericGF as second class
   ZXing.Common.ReedSolomon.GenericGF;
 
@@ -74,7 +74,7 @@ var
 begin
   poly := TGenericGFPoly.Create(self.field, received);
 
-  syndromeCoefficients := TArray<Integer>.Create;
+  syndromeCoefficients := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(syndromeCoefficients, twoS);
 
   try
@@ -153,7 +153,7 @@ begin
     Exit
   end;
 
-  Result := TArray<Integer>.Create;
+  Result := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(Result, numErrors);
 
   e := 0;
@@ -186,7 +186,7 @@ var
 
 begin
   s := Length(errorLocations);
-  Result := TArray<Integer>.Create;
+  Result := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(Result, s);
 
   i := 0;

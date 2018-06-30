@@ -26,7 +26,7 @@ unit ZXing.QrCode.Internal.Mode;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   ZXing.QrCode.Internal.Version;
 
 type

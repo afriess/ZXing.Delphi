@@ -1,4 +1,4 @@
-unit ZXIng.ByteSegments;
+unit ZXing.ByteSegments;
 
 {$IFDEF FPC}
   {$mode delphi}{$H+}
@@ -28,7 +28,7 @@ function ByteSegmentsCreate:IByteSegments;
 implementation
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
+  SysUtils,
   Generics.Collections;
 
 type

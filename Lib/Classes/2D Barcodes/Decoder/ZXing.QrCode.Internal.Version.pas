@@ -26,8 +26,8 @@ unit ZXing.QrCode.Internal.Version;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   ZXing.Common.Bitmatrix,
   ZXing.QrCode.Internal.ErrorCorrectionLevel,
   ZXing.QrCode.Internal.FormatInformation, 
@@ -241,7 +241,7 @@ class function TVersion.GetBuildVersions: TArray<TVersion>;
 begin
   Result := TArray<TVersion>.Create(
 
-    TVersion.Create(1, TArray<Integer>.Create,
+    TVersion.Create(1, TArray<Integer>.Create{$ifndef FPC}(){$endif},
     TArray<TECBlocks>.Create(TECBlocks.Create(7,
     TArray<TECB>.Create(TECB.Create(1, 19))), TECBlocks.Create(10,
     TArray<TECB>.Create(TECB.Create(1, 16))), TECBlocks.Create(13,

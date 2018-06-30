@@ -27,8 +27,8 @@ unit ZXing.OneD.UPCEANReader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.Helpers,
   ZXing.OneD.OneDReader,
@@ -39,7 +39,7 @@ uses
   ZXing.ReadResult,
   ZXing.DecodeHintType,
   ZXing.ResultPoint,
-  ZXing.BarcodeFormat;
+  ZXing.BarCodeFormat;
 
 type
   TIntegerArray=TArray<Integer>;
@@ -251,7 +251,7 @@ begin
   for i := 10 to Pred(20) do
   begin
     widths := L_PATTERNS[(i - 10)];
-    reversedWidths := TIntegerArray.Create;
+    reversedWidths := TIntegerArray.Create{$ifndef FPC}(){$endif};
     SetLength(reversedWidths, Length(widths));
     for j := 0 to Pred(Length(widths)) do
       reversedWidths[j] := widths[((Length(widths) - j) - 1)];
@@ -329,7 +329,7 @@ begin
   foundStart := false;
   startRange := nil;
   nextStart := 0;
-  counters := TIntegerArray.Create;
+  counters := TIntegerArray.Create{$ifndef FPC}(){$endif};
   l := Length(START_END_PATTERN);
   SetLength(counters, l);
   while (not foundStart) do
@@ -360,7 +360,7 @@ class function TUPCEANReader.findGuardPattern(const row: IBitArray;
 var
   counters: TIntegerArray;
 begin
-  counters := TIntegerArray.Create;
+  counters := TIntegerArray.Create{$ifndef FPC}(){$endif};
   SetLength(counters, Length(pattern));
   Result := findGuardPattern(row, rowOffset, whiteFirst, pattern, counters);
   counters:=nil;
@@ -402,7 +402,7 @@ begin
           break;
         end;
         Inc(patternStart, (counters[0] + counters[1]));
-        curCounter := TIntegerArray.Create;
+        curCounter := TIntegerArray.Create{$ifndef FPC}(){$endif};
         SetLength(curCounter, Length(counters));
         TArray.Copy(counters, curCounter, 2, 0, (patternLength - 2));
         { curCounter[patternLength - 2] := 0;

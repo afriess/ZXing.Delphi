@@ -26,15 +26,15 @@ unit ZXing.OneD.Code93Reader;
 interface
 
 uses
-  {$ifndef FPC}System.{$endif}SysUtils,
-  {$ifndef FPC}System.{$endif}Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
   ZXing.ReadResult,
   ZXing.DecodeHintType,
   ZXing.ResultPoint,
-  ZXing.BarcodeFormat,
+  ZXing.BarCodeFormat,
   ZXing.Common.Detector.MathUtils;
 
 type
@@ -89,7 +89,7 @@ begin
 
   ASTERISK_ENCODING := TCode93Reader.CHARACTER_ENCODINGS[$2F];
 
-  counters := TArray<Integer>.Create;
+  counters := TArray<Integer>.Create{$ifndef FPC}(){$endif};
   SetLength(counters, 6);
   decodeRowResult := TStringBuilder.Create();
 end;
@@ -321,7 +321,8 @@ begin
 
   until (decodedChar = '*');
 
-  self.decodeRowResult.Remove((self.decodeRowResult.length - 1), 1);
+  counter:=(self.decodeRowResult.length-1);
+  if (counter>0) then self.decodeRowResult.Remove(counter, 1);
 
   lastPatternSize := 0;
 
